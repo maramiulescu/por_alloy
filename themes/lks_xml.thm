@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<node>
+   <type name="a"/>
+   <type name="b"/>
+   <type name="Int"/>
+   <type name="q"/>
+   <type name="s1"/>
+   <type name="s2"/>
+   <type name="s3"/>
+   <type name="String"/>
+   <type name="univ"/>
+   <type name="lks/bot"/>
+   <type name="lks/empty"/>
+   <type name="lks/Init"/>
+   <type name="lks/State"/>
+   <type name="lks/tau"/>
+   <type name="seq/Int"/>
+   <set name="$correctness_p" type="lks/lsts/Path"/>
+   <set name="$correctness_p&quot;" type="lks/lsts/Path"/>
+   <set name="lks/Action&quot;" type="lks/Action"/>
+   <set name="lks/AP&quot;" type="lks/AP"/>
+</node>
+
+<node color="White">
+   <type name="lks/lsts/Path"/>
+</node>
+
+<node shape="Ellipse" color="Gray" label="s">
+   <type name="lks/lsts/AState"/>
+</node>
+
+<node visible="no">
+   <type name="lks/Action"/>
+   <type name="lks/AP"/>
+</node>
+
+<node visible="yes" color="White" label="t">
+   <type name="lks/lsts/Transition"/>
+</node>
+
+<edge color="Black">
+   <relation name="dest"> <type name="lks/lsts/Transition"/> <type name="lks/lsts/AState"/> </relation>
+</edge>
+
+<edge color="Black" layout="yes">
+   <relation name="src"> <type name="lks/lsts/Transition"/> <type name="lks/lsts/AState"/> </relation>
+</edge>
+
+<edge visible="no" attribute="yes">
+   <relation name="end"> <type name="lks/lsts/Path"/> <type name="lks/lsts/AState"/> </relation>
+   <relation name="label"> <type name="lks/lsts/AState"/> <type name="lks/AP"/> </relation>
+   <relation name="label"> <type name="lks/lsts/Transition"/> <type name="lks/Action"/> </relation>
+   <relation name="start"> <type name="lks/lsts/Path"/> <type name="lks/lsts/AState"/> </relation>
+   <relation name="tr"> <type name="lks/lsts/Path"/> <type name="seq/Int"/> <type name="lks/lsts/Transition"/> </relation>
+</edge>
+
+</view>
+
+</alloy>

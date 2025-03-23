@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<node>
+   <type name="Init"/>
+   <type name="Int"/>
+   <type name="State"/>
+   <type name="String"/>
+   <type name="univ"/>
+   <type name="seq/Int"/>
+   <type name="lsts/ord_action/Ord"/>
+   <type name="lsts/ord_state/Ord"/>
+   <set name="$nonemptyLang_s" type="univ"/>
+</node>
+
+<node label="Init">
+   <type name="Qinit"/>
+   <type name="Sinit"/>
+</node>
+
+<node shape="Dbl Circle">
+   <set name="this/Accepting" type="S"/>
+</node>
+
+<node shape="Ellipse" color="Gray">
+   <type name="Q"/>
+   <type name="S"/>
+   <type name="lsts/AState"/>
+</node>
+
+<node visible="no">
+   <type name="Action"/>
+   <type name="lsts/Path"/>
+   <type name="lsts/Transition"/>
+</node>
+
+<node visible="no" label="e">
+   <type name="Sigma"/>
+</node>
+
+<node visible="no" label="op">
+   <type name="Operation"/>
+</node>
+
+<edge color="Black" label=" ">
+   <relation name="succ"> <type name="Q"/> <type name="Operation"/> <type name="Q"/> </relation>
+   <relation name="succ"> <type name="S"/> <type name="Sigma"/> <type name="S"/> </relation>
+</edge>
+
+<edge color="Black" style="Dashed" label=" ">
+   <relation name="$t"> <type name="lsts/AState"/> <type name="Operation"/> <type name="Sigma"/> <type name="lsts/AState"/> </relation>
+</edge>
+
+<edge color="Red" label="">
+   <relation name="$t_r"> <type name="lsts/AState"/> <type name="lsts/AState"/> </relation>
+</edge>
+
+<edge color="Red" visible="no" label="">
+   <relation name="$succ_r&quot;"> <type name="lsts/AState"/> <type name="lsts/AState"/> </relation>
+</edge>
+
+<edge visible="no">
+   <relation name="enabled"> <type name="Q"/> <type name="Operation"/> </relation>
+   <relation name="enabled"> <type name="S"/> <type name="Sigma"/> </relation>
+   <relation name="label"> <type name="lsts/AState"/> <type name="Sigma"/> </relation>
+   <relation name="r"> <type name="lsts/AState"/> <type name="Action"/> </relation>
+</edge>
+
+<edge visible="no" attribute="yes">
+   <relation name="ample"> <type name="Q"/> <type name="S"/> <type name="Operation"/> </relation>
+   <relation name="blabel"> <type name="Action"/> <type name="Sigma"/> </relation>
+   <relation name="bstate"> <type name="lsts/AState"/> <type name="S"/> </relation>
+   <relation name="label"> <type name="Q"/> <type name="Sigma"/> </relation>
+   <relation name="plabel"> <type name="Action"/> <type name="Operation"/> </relation>
+   <relation name="pstate"> <type name="lsts/AState"/> <type name="Q"/> </relation>
+</edge>
+
+</view>
+
+</alloy>

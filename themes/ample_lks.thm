@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<node>
+   <type name="bot"/>
+   <type name="empty"/>
+   <type name="Init"/>
+   <type name="Int"/>
+   <type name="State"/>
+   <type name="String"/>
+   <type name="tau"/>
+   <type name="univ"/>
+   <type name="seq/Int"/>
+   <set name="this/Action&quot;" type="Action"/>
+   <set name="this/AP&quot;" type="AP"/>
+   <set name="$report_example_p1" type="lsts/Path"/>
+   <set name="$report_example_p2" type="lsts/Path"/>
+   <set name="$report_example_p3" type="lsts/Path"/>
+   <set name="$report_example_p4" type="lsts/Path"/>
+   <set name="$report_example_s" type="lsts/AState"/>
+</node>
+
+<node color="White">
+   <type name="lsts/Path"/>
+</node>
+
+<node color="White" label="t">
+   <type name="lsts/Transition"/>
+</node>
+
+<node shape="Ellipse" color="Gray" label="s">
+   <type name="lsts/AState"/>
+</node>
+
+<node visible="no">
+   <type name="AP"/>
+</node>
+
+<node visible="no" label="a">
+   <type name="Action"/>
+</node>
+
+<edge color="Black" layout="no" attribute="no">
+   <relation name="dest"> <type name="lsts/Transition"/> <type name="lsts/AState"/> </relation>
+</edge>
+
+<edge color="Black" layout="yes">
+   <relation name="src"> <type name="lsts/Transition"/> <type name="lsts/AState"/> </relation>
+</edge>
+
+<edge visible="no">
+   <relation name="end"> <type name="lsts/Path"/> <type name="lsts/AState"/> </relation>
+   <relation name="r"> <type name="lsts/AState"/> <type name="Action"/> </relation>
+</edge>
+
+<edge visible="no" attribute="no">
+   <relation name="start"> <type name="lsts/Path"/> <type name="lsts/AState"/> </relation>
+</edge>
+
+<edge visible="no" attribute="yes">
+   <relation name="label"> <type name="lsts/AState"/> <type name="AP"/> </relation>
+   <relation name="label"> <type name="lsts/Transition"/> <type name="Action"/> </relation>
+   <relation name="tr"> <type name="lsts/Path"/> <type name="seq/Int"/> <type name="lsts/Transition"/> </relation>
+</edge>
+
+</view>
+
+</alloy>
