@@ -1,5 +1,5 @@
 module ample_pa
-open lib/blsts[Sigma,Action] as lsts
+open lib/blsts[Sigma,Action] as blsts
 
 --------- finite state program 
 sig Q {

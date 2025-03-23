@@ -1,5 +1,5 @@
 module stubborn_pg
-open lib/blsts[Int, Action] as lsts
+open lib/blsts[Int, Action] as blsts
 
 sig Action {}
 one sig Even {} // diamond

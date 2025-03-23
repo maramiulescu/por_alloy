@@ -1,4 +1,4 @@
-open stubborn_lsts as lsts
+open stubborn_lsts as blsts
 
 pred test_correction {
 	D1" and D2w and V and I and L

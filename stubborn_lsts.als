@@ -1,5 +1,5 @@
 module stubborn_lsts
-open lib/blsts[AP, Action] as lsts
+open lib/blsts[AP, Action] as blsts
 
 sig AP {}
 sig Action {}

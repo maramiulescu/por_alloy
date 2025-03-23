@@ -27,17 +27,17 @@
    <type name="rg/State"/>
    <type name="rg/Strategy"/>
    <type name="seq/Int"/>
-   <set name="$win_preservation_s" type="rg/lsts/AState"/>
+   <set name="$win_preservation_s" type="rg/blsts/AState"/>
    <set name="rg/A1" type="rg/Action"/>
    <set name="rg/A2" type="rg/Action"/>
 </node>
 
 <node numberatoms="no">
-   <type name="rg/lsts/Path"/>
+   <type name="rg/blsts/Path"/>
 </node>
 
 <node shape="Ellipse" color="Gray">
-   <type name="rg/lsts/AState"/>
+   <type name="rg/blsts/AState"/>
 </node>
 
 <node visible="no">
@@ -47,33 +47,33 @@
 </node>
 
 <node visible="yes" numberatoms="no" color="White">
-   <type name="rg/lsts/Transition"/>
+   <type name="rg/blsts/Transition"/>
 </node>
 
 <edge color="Black">
-   <relation name="dest"> <type name="rg/lsts/Transition"/> <type name="rg/lsts/AState"/> </relation>
+   <relation name="dest"> <type name="rg/blsts/Transition"/> <type name="rg/blsts/AState"/> </relation>
 </edge>
 
 <edge color="Black" layout="yes">
-   <relation name="src"> <type name="rg/lsts/Transition"/> <type name="rg/lsts/AState"/> </relation>
+   <relation name="src"> <type name="rg/blsts/Transition"/> <type name="rg/blsts/AState"/> </relation>
 </edge>
 
 <edge visible="no">
-   <relation name="end"> <type name="rg/lsts/Path"/> <type name="rg/lsts/AState"/> </relation>
-   <relation name="start"> <type name="rg/lsts/Path"/> <type name="rg/lsts/AState"/> </relation>
+   <relation name="end"> <type name="rg/blsts/Path"/> <type name="rg/blsts/AState"/> </relation>
+   <relation name="start"> <type name="rg/blsts/Path"/> <type name="rg/blsts/AState"/> </relation>
 </edge>
 
 <edge visible="no" attribute="no">
-   <relation name="$all_strategies_exist_st"> <type name="rg/lsts/AState"/> <type name="rg/Action"/> <type name="rg/Strategy"/> </relation>
+   <relation name="$all_strategies_exist_st"> <type name="rg/blsts/AState"/> <type name="rg/Action"/> <type name="rg/Strategy"/> </relation>
 </edge>
 
 <edge visible="no" attribute="yes">
-   <relation name="label"> <type name="rg/lsts/AState"/> <type name="rg/Label"/> </relation>
-   <relation name="label"> <type name="rg/lsts/Transition"/> <type name="rg/Action"/> </relation>
-   <relation name="move"> <type name="rg/Strategy"/> <type name="rg/lsts/AState"/> <type name="rg/Action"/> </relation>
-   <relation name="move"> <type name="rg/Strategy"/> <type name="rg/lsts/AState"/> <type name="rg/bot"/> </relation>
-   <relation name="r"> <type name="rg/lsts/AState"/> <type name="rg/Action"/> </relation>
-   <relation name="tr"> <type name="rg/lsts/Path"/> <type name="seq/Int"/> <type name="rg/lsts/Transition"/> </relation>
+   <relation name="label"> <type name="rg/blsts/AState"/> <type name="rg/Label"/> </relation>
+   <relation name="label"> <type name="rg/blsts/Transition"/> <type name="rg/Action"/> </relation>
+   <relation name="move"> <type name="rg/Strategy"/> <type name="rg/blsts/AState"/> <type name="rg/Action"/> </relation>
+   <relation name="move"> <type name="rg/Strategy"/> <type name="rg/blsts/AState"/> <type name="rg/bot"/> </relation>
+   <relation name="r"> <type name="rg/blsts/AState"/> <type name="rg/Action"/> </relation>
+   <relation name="tr"> <type name="rg/blsts/Path"/> <type name="seq/Int"/> <type name="rg/blsts/Transition"/> </relation>
 </edge>
 
 </view>

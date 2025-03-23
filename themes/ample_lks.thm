@@ -19,23 +19,23 @@
    <type name="seq/Int"/>
    <set name="this/Action&quot;" type="Action"/>
    <set name="this/AP&quot;" type="AP"/>
-   <set name="$report_example_p1" type="lsts/Path"/>
-   <set name="$report_example_p2" type="lsts/Path"/>
-   <set name="$report_example_p3" type="lsts/Path"/>
-   <set name="$report_example_p4" type="lsts/Path"/>
-   <set name="$report_example_s" type="lsts/AState"/>
+   <set name="$report_example_p1" type="blsts/Path"/>
+   <set name="$report_example_p2" type="blsts/Path"/>
+   <set name="$report_example_p3" type="blsts/Path"/>
+   <set name="$report_example_p4" type="blsts/Path"/>
+   <set name="$report_example_s" type="blsts/AState"/>
 </node>
 
 <node color="White">
-   <type name="lsts/Path"/>
+   <type name="blsts/Path"/>
 </node>
 
 <node color="White" label="t">
-   <type name="lsts/Transition"/>
+   <type name="blsts/Transition"/>
 </node>
 
 <node shape="Ellipse" color="Gray" label="s">
-   <type name="lsts/AState"/>
+   <type name="blsts/AState"/>
 </node>
 
 <node visible="no">
@@ -47,26 +47,26 @@
 </node>
 
 <edge color="Black" layout="no" attribute="no">
-   <relation name="dest"> <type name="lsts/Transition"/> <type name="lsts/AState"/> </relation>
+   <relation name="dest"> <type name="blsts/Transition"/> <type name="blsts/AState"/> </relation>
 </edge>
 
 <edge color="Black" layout="yes">
-   <relation name="src"> <type name="lsts/Transition"/> <type name="lsts/AState"/> </relation>
+   <relation name="src"> <type name="blsts/Transition"/> <type name="blsts/AState"/> </relation>
 </edge>
 
 <edge visible="no">
-   <relation name="end"> <type name="lsts/Path"/> <type name="lsts/AState"/> </relation>
-   <relation name="r"> <type name="lsts/AState"/> <type name="Action"/> </relation>
+   <relation name="end"> <type name="blsts/Path"/> <type name="blsts/AState"/> </relation>
+   <relation name="r"> <type name="blsts/AState"/> <type name="Action"/> </relation>
 </edge>
 
 <edge visible="no" attribute="no">
-   <relation name="start"> <type name="lsts/Path"/> <type name="lsts/AState"/> </relation>
+   <relation name="start"> <type name="blsts/Path"/> <type name="blsts/AState"/> </relation>
 </edge>
 
 <edge visible="no" attribute="yes">
-   <relation name="label"> <type name="lsts/AState"/> <type name="AP"/> </relation>
-   <relation name="label"> <type name="lsts/Transition"/> <type name="Action"/> </relation>
-   <relation name="tr"> <type name="lsts/Path"/> <type name="seq/Int"/> <type name="lsts/Transition"/> </relation>
+   <relation name="label"> <type name="blsts/AState"/> <type name="AP"/> </relation>
+   <relation name="label"> <type name="blsts/Transition"/> <type name="Action"/> </relation>
+   <relation name="tr"> <type name="blsts/Path"/> <type name="seq/Int"/> <type name="blsts/Transition"/> </relation>
 </edge>
 
 </view>

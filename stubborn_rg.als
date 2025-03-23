@@ -1,5 +1,5 @@
 module stubborn_rg
-open lib/blsts[Label,Action] as lsts
+open lib/blsts[Label,Action] as blsts
 
 sig Label {}
 one sig P1, P2, goal extends Label {}
