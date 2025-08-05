@@ -18,7 +18,7 @@ sig State extends AState {
 one sig Init extends State {}
 
 sig Strategy {
-	move: State -> lone {A1 + bot} 
+	move: State -> one {A1 + bot} 
 }
 
 fact {
