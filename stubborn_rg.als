@@ -71,7 +71,7 @@ fun next_s_r[s: State, st: Strategy] : Action {
 }
 
 fun consistent: Path -> Strategy {
-	{ p: Path & P_c, st: Strategy | consistent[p,st] }
+	{ p: Path, st: Strategy | consistent[p,st] }
 }
 // play p is consistent with strategy st
 pred consistent [p: Path, st: Strategy] {
@@ -80,15 +80,15 @@ pred consistent [p: Path, st: Strategy] {
 // player p1 wins state s
 pred win_state [s: State] {
 	(some st: Strategy {
-		some start.s & consistent.st
-		all p: start.s & consistent.st | some t: stateset[p] | t in Goal
+		some start.s & consistent.st & P_c
+		all p: start.s & consistent.st & P_c | some t: stateset[p] | t in Goal
 	}) or s in Goal and (no s.enabled or s in s.^succ)
 }
 // player p1 wins state s in the reduced game
 pred r_win_state [s: State] {
 	(some st: Strategy {
-		some start.s & consistent.st & P_r
-		all p: start.s & consistent.st & P_r | some t: stateset[p] | t in Goal
+		some start.s & consistent.st & P_c_r
+		all p: start.s & consistent.st & P_c_r | some t: stateset[p] | t in Goal
 	}) or s in Goal and (no r[s] & s.enabled or s in s.^succ_r)
 }
 

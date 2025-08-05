@@ -27,6 +27,7 @@ sig Path {
 let P_e = { p: Path | no p.tr } // empty paths
 let P_r = { p: Path | all t: p.tr.elems | t.label in r[t.src] } // reduced paths
 let P_c = { p: Path | no p.end.enabled or is_lasso[p] } // complete paths
+let P_c_r = { p: Path | (no p.end.enabled & p.end.r or is_lasso[p]) and all t: p.tr.elems | t.label in r[t.src] } // complete reduced paths
 let lassos = { p: Path | is_lasso[p] }
 
 // transition relation
