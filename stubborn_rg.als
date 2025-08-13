@@ -27,6 +27,7 @@ fact {
 	all_strategies_exist
 	Action = A1+A2
 	no A1 & A2
+	deterministic
 }
 
 fun at [s: Strategy, i: State]: lone { A1 + bot } { i.(s.move) }

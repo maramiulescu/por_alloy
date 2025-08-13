@@ -132,6 +132,10 @@ pred rooted_at[s: AState] {
 	s.*succ = AState
 }
 
+pred deterministic {
+	all s1,s2,s3: AState, a: A | (s1->a->s2 in T and s1->a->s3 in T) => s2=s3
+}
+
 fact {
 	valid_paths
 	valid_transitions
