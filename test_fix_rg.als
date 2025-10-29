@@ -6,4 +6,6 @@ pred test_correction {
 	all_paths_exist
 }
 
+//check fix_rg { test_correction => correctness } for 4 seq, 5 State, 5 Transition, 2 Action, exactly 3 Label, 14 Path, 1 Strategy
 check fix_rg { test_correction => correctness } for 4 seq, 5 State, 5 Transition, 2 Action, exactly 3 Label, 14 Path, 1 Strategy
+check new_counterexample { test_correction => correctness } for 5 seq,5 State, 5 Transition, 4 Action, exactly 3 Label, 25 Path, 5 Strategy 
