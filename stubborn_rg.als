@@ -28,7 +28,6 @@ fact {
 	Action = A1+A2
 	no A1 & A2
 	deterministic
-	some Goal
 }
 
 fun at [s: Strategy, i: State]: lone { A1 + bot } { i.(s.move) }
@@ -37,20 +36,14 @@ fun at [s: State -> one {A1+ bot}, i: State]: lone { A1 + bot } { i.s }
 
 pred valid_strategies {
 	all st: Strategy {
-		all s: State | some s.enabled & A1 => st.at[s] in s.enabled & A1 else st.at[s] = bot
+		all s: State | some s.enabled & A1 => (st.at[s] in s.enabled & A1) else st.at[s] = bot
 	}	
 }
 
 // a strategy sigma(s) that is valid in the full game may not be valid in the reduced game
 // i.e. if the action sigma(s) is not present in the reduced game
-pred valid_r_strategy[st: Strategy] {
-//	all s: State | f[st.move,s] = bot or f[st.move,s] in r[s]
-	all s: State | some s.enabled & A1 & r[s] => st.at[s] in s.enabled & A1 & r[s] else st.at[s] = bot
-}
-
-// reduce strategy
-fun f[st: State -> one {A1+ bot}, s: State] : A1 + bot {
-	{ a: A1 + bot | st.at[s] in r[s] => a = st.at[s] else a = bot }
+pred valid_r_strategy[st: State -> one {A1 + bot}, s: State] {
+	some s.enabled & A1 & r[s] => (st.at[s] in s.enabled & A1 & r[s]) else st.at[s] = bot
 }
 
 pred all_strategies_exist {
@@ -78,36 +71,30 @@ fun safe[s: State] : Action {
 	{ a: s.enabled & A1 | all disj q,p: Path | (no s.enabled & A2 and start[p]=s and actions[p] in A1-a and no end[p].enabled & A2 and start[q]=s and q.tr.label.first=a and q.tr.label.rest=p.tr.label) => no end[q].enabled & A2 }
 }
 
-fun next_s_new[s: State, st: State -> one {A1 + bot}] : Action {
+fun next_s[s: State, st: State -> one {A1 + bot}] : Action {
 	st.at[s] != bot => (s.enabled & A2 + st.at[s]) else s.enabled & A2
 }
 
-fun r_next[s: State, st: State -> one {A1 + bot}] : Action {
-	f[st,s] != bot => (s.enabled & A2 + f[st,s]) else s.enabled & A2 & r[s]
+pred consistent [p: Path, st: State -> one {A1 + bot}] {
+	all t: p.tr.elems | some a: next_s[t.src,  st] | t.label = a
 }
 
-pred consistent_new [p: Path, st: State -> one {A1 + bot}] {
-	all t: p.tr.elems | some a: next_s_new[t.src,  st] | t.label = a
-}
-
-pred r_consistent_new [p: Path, st: State -> one {A1 + bot}] {
-	all t: p.tr.elems | some a: r_next[t.src,  st] | t.label = a
+pred r_consistent [p: Path, st: State -> one {A1 + bot}] {
+	all t: p.tr.elems | some a: next_s[t.src,  st] & r[t.src] | t.label = a
 }
 
 // player p1 wins state s
 pred win_state [s: State] {
-	(some st: Strategy {
-		let paths = { p: start.s & P_c | consistent_new[p,st.move] } | ((some p: paths, t :stateset[p] | t in Goal) and (all p: paths | some t: stateset[p] | t in Goal))
-	//	all p: start.s & P_c | consistent_new[p,st.move] implies (some t: stateset[p] | t in Goal)	
-	}) or s in Goal and (no s.enabled or s in s.^succ)
+	some st: Strategy {
+		all p: start.s & P_c | consistent[p,st.move] implies (some t: stateset[p] | t in Goal)	
+	}
 }
 // player p1 wins state s in the reduced game
 pred r_win_state [s: State] {
-	(some st: Strategy {
-		valid_r_strategy[st]
-		let paths = { p: start.s & P_c_r | r_consistent_new[p,st.move] } | ((some p: paths, t: stateset[p] | t in Goal) and (all p: paths | some t: stateset[p] | t in Goal))
-	//	all p: start.s & P_c_r | r_consistent_new[p,st.move] implies (some t: stateset[p] | t in Goal)
-	}) or s in Goal and (no r[s] & s.enabled or s in s.^succ_r)
+	some st: Strategy {
+		all t: State | valid_r_strategy[st.move, t]
+		all p: start.s & P_c_r | r_consistent[p,st.move] implies (some t: stateset[p] | t in Goal)
+	}
 }
 
 pred I {
