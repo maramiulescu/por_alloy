@@ -43,7 +43,12 @@ pred valid_strategies {
 // a strategy sigma(s) that is valid in the full game may not be valid in the reduced game
 // i.e. if the action sigma(s) is not present in the reduced game
 pred valid_r_strategy[st: State -> one {A1 + bot}, s: State] {
-	some s.enabled & A1 & r[s] => (st.at[s] in s.enabled & A1 & r[s]) else st.at[s] = bot
+	some s.enabled & A1 & r[s] => (f[st,s] in s.enabled & A1 & r[s]) else f[st,s] = bot
+}
+
+// reduce strategy
+fun f[st: State -> one {A1+ bot}, s: State] : A1 + bot {
+	{ a: A1 + bot | st.at[s] in r[s] => a = st.at[s] else a = bot }
 }
 
 pred all_strategies_exist {
@@ -75,12 +80,16 @@ fun next_s[s: State, st: State -> one {A1 + bot}] : Action {
 	st.at[s] != bot => (s.enabled & A2 + st.at[s]) else s.enabled & A2
 }
 
+fun next_s_r[s: State, st: State -> one {A1 + bot}] : Action {
+	f[st,s] != bot => (s.enabled & A2 + f[st,s]) else s.enabled & A2
+}
+
 pred consistent [p: Path, st: State -> one {A1 + bot}] {
 	all t: p.tr.elems | some a: next_s[t.src,  st] | t.label = a
 }
 
 pred r_consistent [p: Path, st: State -> one {A1 + bot}] {
-	all t: p.tr.elems | some a: next_s[t.src,  st] & r[t.src] | t.label = a
+	all t: p.tr.elems | some a: next_s_r[t.src,  st] & r[t.src] | t.label = a
 }
 
 // player p1 wins state s
