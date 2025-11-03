@@ -5,12 +5,6 @@ sig Action {}
 one sig Even {} // diamond
 one sig Odd {}
 
-fact {
-	rooted_at [Init]
-	valid_strategies
-	all_strategies_exist
-}
-
 sig State extends AState {
 	player: one { Even + Odd }
 }{
@@ -28,26 +22,24 @@ sig Strategy {
 	move: S_e -> one State
 }
 
-fun min_priority[p: Path] : one Int {
-	let start = { i: Int | some p.tr[i] and p.tr[i].src = p.end } |
-	let cycle = p.tr.subseq[start,#p.tr.inds].src.elems + p.end |
-		integer/min[cycle.label]
+fact {
+	rooted_at [Init]
+	valid_strategies
+	all_strategies_exist
 }
 
-pred keyAction[a: Action, s: State] {
-	let reach = { t,t": State | some b: Action-s.r | t->b->t" in T } |
-		all s": s.*reach | a in s".enabled
-}
-
-fun consistent: Path -> Strategy {
-	{ p: Path & P_c, st: Strategy | consistent[p,st] }
-}
-
-pred odd_priority[i: Int] { rem[i,2] = 1 }
+fun at [s: Strategy, i: State]: lone State { i.(s.move) }
+fun at [s: S_e -> one State, i: State]: lone State { i.s }
 
 pred valid_strategies {
-	all s: Strategy | s.move in succ 
+	all st: Strategy | st.move in succ 
 	all disj s1,s2: Strategy | s1.move != s2.move
+}
+
+// a strategy sigma(s) that is valid in the full game may not be valid in the reduced game
+// i.e. if the state sigma(s) is not reachable in the reduced game
+pred valid_r_strategy[st: State -> one State, s: State] {
+	s->st.at[s] in succ_r
 }
 
 pred all_strategies_exist {
@@ -61,31 +53,43 @@ pred all_strategies_exist {
 	}
 }
 
-// path pi is consistent with strategy s
-pred consistent [p: Path, s: Strategy] {
-	all t: p.tr.elems | t.src.player = Even <=> (t.src).(s.move) = t.dest
+fun min_priority[p: Path] : one Int {
+	let start = { i: Int | some p.tr[i] and p.tr[i].src = p.end } |
+	let cycle = p.tr.subseq[start,#p.tr.inds].src.elems + p.end |
+		integer/min[cycle.label]
+}
+
+pred odd_priority[i: Int] { rem[i,2] = 1 }
+
+pred keyAction[a: Action, s: State] {
+	let reach = { t,t": State | some b: Action-s.r | t->b->t" in T } |
+		all s": s.*reach | a in s".enabled
+}
+
+
+pred consistent [p: Path, st: S_e -> one State] {
+	all t: p.tr.elems | t.src.player = Even iff st.at[t.src] = t.dest
 }
 
 // player Even wins state s
 pred win_state [s: State] {
 	some st: Strategy {
-		some start.s & consistent.st
-		all p: start.s & consistent.st | win_path[p]
+		all p: start.s & P_c| consistent[p, st.move] implies win_path[p]
 	}
 }
 
 // player Even wins state s in the reduced game
 pred r_win_state [s: State] {
 	some st: Strategy {
-		some start.s & consistent.st & P_r
-		all p: start.s & consistent.st & P_r | win_path[p]
+		all t: State | valid_r_strategy[st.move, t]
+		all p: start.s & P_c_r | consistent[p, st.move] implies win_path[p]
 	}
 }
 
 // player Even wins path pi
 pred win_path [pi: Path] {
 	some pi
-	is_lasso[pi] => ! odd_priority[pi.min_priority] else pi.end.player = Odd
+	is_lasso[pi] => !odd_priority[pi.min_priority] else pi.end.player = Odd
 }
 
 ---- stubborn sets
