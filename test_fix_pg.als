@@ -8,3 +8,4 @@ pred test_correction {
 }
 
 check fix_pg { test_correction => correctness } for 3 seq, exactly 1 Even, exactly 1 Odd, 4 State, 3 Action, 6 Transition, 4 Strategy, 15 Path
+check fix_pg_higher_bounds { test_correction => correctness } for 5 seq, exactly 1 Even, exactly 1 Odd, 5 State, 4 Action, 10 Transition, 26 Path, 6 Strategy

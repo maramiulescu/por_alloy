@@ -7,3 +7,4 @@ pred test_correction {
 }
 
 check fix_rg { test_correction => correctness } for 4 seq, 5 State, 5 Transition, 2 Action, exactly 3 Label, 14 Path, 1 Strategy
+check fix_rg_higher_bounds { test_correction => correctness } for 5 seq, 5 State, 4 Action, 3 Label, 9 Transition, 6 Strategy, 26 Path

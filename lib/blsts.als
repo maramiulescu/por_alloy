@@ -27,6 +27,7 @@ sig Path {
 let P_e = { p: Path | no p.tr } // empty paths
 let P_r = { p: Path | all t: p.tr.elems | t.label in r[t.src] } // reduced paths
 let P_c = { p: Path | no p.end.enabled or is_lasso[p] } // complete paths
+let P_c_r = { p: Path | (no p.end.enabled & p.end.r or is_lasso[p]) and all t: p.tr.elems | t.label in r[t.src] } // complete reduced paths
 let lassos = { p: Path | is_lasso[p] }
 
 // transition relation
@@ -129,6 +130,10 @@ pred valid_path [p: Path, t: Transition] {
 // all states are reachable from s
 pred rooted_at[s: AState] {
 	s.*succ = AState
+}
+
+pred deterministic {
+	all s1,s2,s3: AState, a: A | (s1->a->s2 in T and s1->a->s3 in T) => s2=s3
 }
 
 fact {

@@ -54,7 +54,7 @@ pred L {
 
 pred correctness {
 	all p: start.Init & P_c |
-		some q: start.Init & P_c & P_r |
+		some q: start.Init & P_c_r |
 			stutter_equiv[p.tr,q.tr]
 }
 

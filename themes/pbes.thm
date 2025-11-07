@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<node>
+   <type name="And"/>
+   <type name="AndClause"/>
+   <type name="c1"/>
+   <type name="c2"/>
+   <type name="c3"/>
+   <type name="c4"/>
+   <type name="Clause"/>
+   <type name="cond1"/>
+   <type name="cond2"/>
+   <type name="cond3"/>
+   <type name="d1"/>
+   <type name="d2"/>
+   <type name="d3"/>
+   <type name="Eq"/>
+   <type name="eq1"/>
+   <type name="f"/>
+   <type name="ImplClause"/>
+   <type name="Int"/>
+   <type name="Or"/>
+   <type name="Phi"/>
+   <type name="Pos1"/>
+   <type name="Pos2"/>
+   <type name="State"/>
+   <type name="univ"/>
+   <type name="Y"/>
+   <type name="pg/AState"/>
+   <type name="pg/Path"/>
+   <type name="seq/Int"/>
+</node>
+
+<node visible="no">
+   <type name="Condition"/>
+   <type name="D"/>
+   <type name="empty"/>
+   <type name="mu"/>
+   <type name="nu"/>
+   <type name="String"/>
+   <type name="Symbol"/>
+   <type name="X"/>
+   <type name="pg/Transition"/>
+</node>
+
+<edge merge="no">
+   <relation name="$succ"> <type name="pg/AState"/> <type name="pg/AState"/> </relation>
+</edge>
+
+<edge visible="no">
+   <relation name="$succ_r"> <type name="pg/AState"/> <type name="pg/AState"/> </relation>
+   <relation name="$T"> <type name="pg/AState"/> <type name="empty"/> <type name="pg/AState"/> </relation>
+   <relation name="r"> <type name="pg/AState"/> <type name="empty"/> </relation>
+</edge>
+
+<edge visible="no" attribute="yes">
+   <relation name="clauses"> <type name="Phi"/> <type name="Clause"/> </relation>
+   <relation name="cond"> <type name="Clause"/> <type name="Condition"/> </relation>
+   <relation name="end"> <type name="pg/Path"/> <type name="pg/AState"/> </relation>
+   <relation name="pvi"> <type name="Clause"/> <type name="X"/> <type name="D"/> </relation>
+   <relation name="rhs"> <type name="Eq"/> <type name="Phi"/> </relation>
+   <relation name="slabel"> <type name="pg/AState"/> <type name="D"/> </relation>
+   <relation name="start"> <type name="pg/Path"/> <type name="pg/AState"/> </relation>
+   <relation name="sym"> <type name="Phi"/> <type name="Symbol"/> </relation>
+   <relation name="x"> <type name="Eq"/> <type name="X"/> </relation>
+   <relation name="x"> <type name="pg/AState"/> <type name="X"/> </relation>
+</edge>
+
+</view>
+
+</alloy>
