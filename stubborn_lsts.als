@@ -69,6 +69,31 @@ pred correctness_tr {
 	}
 }
 
+pred stutter_eq[p,q: Path] {
+	(no p.end.enabled and no q.end.enabled and stutter_eq_deadlock[p,q]) or (is_lasso[p] and is_lasso[q] and stutter_eq_lasso[p,q])
+}
+
+pred stutter_eq_deadlock[p,q: Path] {
+	p.tr.alternations = q.tr.alternations
+}
+
+pred stutter_eq_lasso[p,q: Path] {
+	#p.tr.alternations > #q.tr.alternations implies p.tr.butlast.alternations = q.tr.alternations
+	#q.tr.alternations > #p.tr.alternations implies q.tr.butlast.alternations = p.tr.alternations
+	Int.(p._cycle.alternations) = Int.(q._cycle.alternations)
+}
+
+fun _cycle[p: Path] : seq Transition {
+	// start of cycle in path
+	let start = { i: Int | some p.tr[i] and p.tr[i].src = p.end } |
+		p.tr.subseq[start,#p.tr.inds]
+}
+
+fun alternations[tr: seq Transition] : seq State->State {
+	let no_stut = { i: tr.inds, t: Transition | i->t in tr and t.src.label != t.dest.label } |
+	{ i: Int, l,l": AP | some t: no_stut.elems | l = t.src.label and l" = t.dest.label and i = _f[idxOf[no_stut, t], no_stut.inds] }
+}
+
 pred stutter_equiv[p,q: seq Transition] {
 	let no_stut_p = { i: Int | let t=p[i] | some t and t.src.label != t.dest.label } |
 	let no_stut_q = { i: Int | let t=q[i] | some t and t.src.label != t.dest.label } |
@@ -78,4 +103,8 @@ pred stutter_equiv[p,q: seq Transition] {
 
 fun f[i: Int, p: set Int] : Int {
 	#{ j: p | j > i }
+}
+
+fun _f[i: Int, p: set Int] : Int {
+	#{ j: p | j < i }
 }
