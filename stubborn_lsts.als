@@ -55,18 +55,7 @@ pred L {
 pred correctness {
 	all p: start.Init & P_c |
 		some q: start.Init & P_c_r |
-			stutter_equiv[p.tr,q.tr]
-}
-
-pred correctness_tr {
-	all p: start.Init & P_c |
-		some t: seq Transition {
-			t.first.src=Init
-			valid_trseq[t]
-			complete_trseq[t]
-			reduced_trseq[t]
-			stutter_equiv[p.tr, t]
-	}
+			stutter_eq[p,q]
 }
 
 pred stutter_eq[p,q: Path] {
@@ -92,17 +81,6 @@ fun _cycle[p: Path] : seq Transition {
 fun alternations[tr: seq Transition] : seq State->State {
 	let no_stut = { i: tr.inds, t: Transition | i->t in tr and t.src.label != t.dest.label } |
 	{ i: Int, l,l": AP | some t: no_stut.elems | l = t.src.label and l" = t.dest.label and i = _f[idxOf[no_stut, t], no_stut.inds] }
-}
-
-pred stutter_equiv[p,q: seq Transition] {
-	let no_stut_p = { i: Int | let t=p[i] | some t and t.src.label != t.dest.label } |
-	let no_stut_q = { i: Int | let t=q[i] | some t and t.src.label != t.dest.label } |
-	#no_stut_p = #no_stut_q and all i: no_stut_p, j: no_stut_q |
-		f[i,no_stut_p] = f[j,no_stut_q] => (p[i].src.label=q[j].src.label and p[i].dest.label=q[j].dest.label)
-}
-
-fun f[i: Int, p: set Int] : Int {
-	#{ j: p | j > i }
 }
 
 fun _f[i: Int, p: set Int] : Int {
