@@ -59,8 +59,19 @@
 </edge>
 
 <edge visible="no">
-   <relation name="$t"> <type name="blsts/blsts/AState"/> <type name="blsts/Action"/> <type name="blsts/blsts/AState"/> </relation>
-   <relation name="$t_r"> <type name="blsts/blsts/AState"/> <type name="blsts/blsts/AState"/> </relation>
+   <relation name="$next"> <type name="blsts/Action"/> <type name="blsts/Action"/> </relation>
+   <relation name="$next"> <type name="blsts/AP"/> <type name="blsts/AP"/> </relation>
+   <relation name="$next"> <type name="blsts/blsts/AState"/> <type name="blsts/blsts/AState"/> </relation>
+   <relation name="$next"> <type name="blsts/blsts/Path"/> <type name="blsts/blsts/Path"/> </relation>
+   <relation name="$next"> <type name="blsts/blsts/Transition"/> <type name="blsts/blsts/Transition"/> </relation>
+   <relation name="$prev"> <type name="blsts/Action"/> <type name="blsts/Action"/> </relation>
+   <relation name="$prev"> <type name="blsts/AP"/> <type name="blsts/AP"/> </relation>
+   <relation name="$prev"> <type name="blsts/blsts/AState"/> <type name="blsts/blsts/AState"/> </relation>
+   <relation name="$prev"> <type name="blsts/blsts/Path"/> <type name="blsts/blsts/Path"/> </relation>
+   <relation name="$prev"> <type name="blsts/blsts/Transition"/> <type name="blsts/blsts/Transition"/> </relation>
+   <relation name="$succ"> <type name="blsts/blsts/AState"/> <type name="blsts/blsts/AState"/> </relation>
+   <relation name="$succ_r"> <type name="blsts/blsts/AState"/> <type name="blsts/blsts/AState"/> </relation>
+   <relation name="$T"> <type name="blsts/blsts/AState"/> <type name="blsts/Action"/> <type name="blsts/blsts/AState"/> </relation>
 </edge>
 
 <edge visible="no" attribute="yes">
