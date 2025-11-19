@@ -72,7 +72,7 @@ pred stutter_eq_lasso[p,q: Path] {
 	Int.(p._cycle.alternations) = Int.(q._cycle.alternations)
 }
 
-fun alternations[tr: seq Transition] : seq State->State {
+fun alternations[tr: seq Transition] : seq AP->AP {
 	let no_stut = { i: tr.inds, t: Transition | i->t in tr and t.src.label != t.dest.label } |
 	{ i: Int, l,l": AP | some t: no_stut.elems | l = t.src.label and l" = t.dest.label and i = _f[idxOf[no_stut, t], no_stut.inds] }
 }
@@ -88,28 +88,33 @@ fun _cycle[p: Path] : seq Transition {
 		p.tr.subseq[start,#p.tr.inds]
 }
 
-// return the transitions that precede the cycle if a lasso
+// return the transitions that precede the cycle of a lasso
 fun _pre[p: Path] : seq Transition {
 	let start = { i: Int | some p.tr[i] and p.tr[i].src = p.end } |
 		p.tr.subseq[0,minus[start,1]]
 }
 
-// remove stuttering from a sequence of labels
+// return the sequence of state labels along a path (trace)
+fun _trace[tr: seq Transition] : seq AP {
+	tr.src.label
+}
+
+// remove stuttering from a trace
 fun _no_stut[trace: seq AP] : seq AP {
 	let ids = { i: trace.inds | i = 0 or trace[i] != trace[minus[i,1]] } |
 		{ i: Int, l: AP | some j: ids | l = trace[j] and i = _f[j, ids] }
 }
 
-// return the no-stutter trace of the cycle of a lasso (up to and including the start of cycle)
+// return the no-stutter trace of a lasso, up to the start of cycle
 fun _w_pre[p: Path] : seq AP {
-	let trace = p._pre.src.label.add[p._pre.last.dest.label] |
+	// corner case: when the stutter happens right at the start of the cycle
+	let trace = (p._pre._trace.last = p._cycle._trace.first) => p._pre._trace.butlast else p._pre._trace |
 		trace._no_stut
 }
 
 // return the no-stutter trace of the cycle of a lasso
 fun _w_inf[p: Path] : seq AP {
-	let trace = p._cycle.dest.label |
-		trace._no_stut
+	p._cycle._trace._no_stut
 }
 
 // longest rho
@@ -117,22 +122,17 @@ fun _rho[w_pre: seq AP, w_inf: seq AP] : seq AP {
 	{ i: Int, l: AP | l = w_inf[i] and some j: Int | l = w_pre[j] }
 }
 
+// t is a subsequence of s
+pred is_subseq[s: seq AP, t: seq AP] {
+	let R = { i: s.inds, j: t.inds | s[i] = t[j] } {
+		all i: t.inds | some i.R // all indices of t appear in s
+		all i,j: t.inds | i < j implies i.R < j.R // all indices of t appear in the same order in s
+		 // all indices of t appear consecutively in s
+	}
+}
+
 // todo: fix out-of-order indices after append.
 fun _tau[w_pre: seq AP, w_inf: seq AP] : seq AP {
 	let rho = _rho[w_pre, w_inf] |
 		{ i: Int, l: AP | {0 -> l}.append[rho] = w_inf.subseq[i, #rho] and some j: Int | {0 -> l}.append[rho] = w_pre.subseq[j, #rho] }
 }
-
-one sig s1,s2,s3 extends State {}
-one sig l,empty extends AP {}
-one sig p,q extends Path {}
-fact {
-	succ = Init->s1 + s1->s2 + s2->s1 + Init->s3 + s3->s2
-	Init.label = l
-	s1.label = l
-	s2.label = empty
-	s3.label = empty
-	p = { path: Path | path.start = Init and path.end = s2 and path.tr.src = 0->Init+1->s3+2->s2+3->s1 }
-	q = { path: Path | path.start = Init and path.end = s1 and path.tr.src = 0->Init+1->s1+2->s2 }
-}
-run { all_paths_exist } for exactly 2 AP, exactly 4 State, 4 seq, exactly 5 Transition, exactly 1 Action, 18 Path
