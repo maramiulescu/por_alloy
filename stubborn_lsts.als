@@ -142,6 +142,23 @@ pred reduces_to[w_pre_p, w_inf_p, w_pre_q, w_inf_q: seq AP] {
 	}
 }
 
+pred reduces_to"[w_pre_p, w_inf_p, w_pre_q, w_inf_q: seq AP] {
+	w_inf_p = w_inf_q
+	some k: Int {
+		let tau = w_inf_p, i = w_pre_p.idxOf[tau.first], sigma = _pre[w_pre_p, i] {
+			k >= 0
+			_suf[w_pre_p, i] = _repeat[tau, k]
+			w_pre_q = sigma
+		}
+	}
+}
+
+// return a sequence consisting of p repeated k times
+// note: the length of the new sequence should fit inside the seq bound
+fun _repeat[p: seq AP, k: Int] : seq AP {
+	k > 2 => p.append[p].append[p] else (k > 1 => p.append[p] else (k > 0 => p else p.subseq[-1,-1])) // the last case is a trick to return the empty sequence
+}
+
 pred stutter_eq_lasso[p,q: Path] {
 	#p.tr > #q.tr implies reduces_to[p._w_pre, p._w_inf, q._w_pre, q._w_inf]
 	#q.tr > #p.tr implies reduces_to[q._w_pre, q._w_inf, p._w_pre, p._w_inf]

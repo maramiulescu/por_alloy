@@ -1,6 +1,9 @@
 open stubborn_lsts as blsts
 
 // "unit tests" for stutter equivalence
+//	t1-t9: case (s p, t p) -> (s, p t)
+//	t10-: case (s t*k, t) -> (s, t)
+// 
 //	t1:
 //	t2: corner case: when the stutter happens at the start of the cycle
 //	t3: corner case: when the stutter happens in pre, right where pre ends and the cycle begins
@@ -10,6 +13,7 @@ open stubborn_lsts as blsts
 //	t7: corner case: when the stutter happens at the end of the cycle, twice
 //	t8: corner case: when the stutter happens in pre, right where pre ends and the cycle begins, twice
 //	t9: corner case for the corner case (t7): when the stutter happens in the cycle, in all states of the cycle
+//	t10: 
 //
 // comment out all tests except the one to run
 //
@@ -162,20 +166,42 @@ open stubborn_lsts as blsts
 //check lasso_4states_3 { t8 => c8 } for 2 AP, 4 State, 4 Transition, 4 seq, 1 Action, 1 Path
 //run { t8 } for 2 AP, 4 State, 4 Transition, 4 seq, 1 Action, 1 Path
 //
+//one sig s1,s2,s3 extends State {}
+//one sig l,empty extends AP {}
+//one sig p extends Path {}
+//pred t9 {
+//	succ = Init->s1+s1->s2+s2->s3+s3->s1
+//	Init.label = empty
+//	s1.label = l
+//	s2.label = l
+//	s3.label = l
+//	p = { path: Path | path.start = Init and path.end = s1 and path.tr.src = 0->Init+1->s1+2->s2+3->s3 }
+//}
+//pred c9 {
+//	p._w_pre = 0->empty
+//	p._w_inf = 0->l
+//}
+//check lasso_4states_4 { t9 => c9 } for 2 AP, 4 State, 4 Transition, 4 seq, 1 Action, 1 Path
+//run { t9 } for 2 AP, 4 State, 4 Transition, 4 seq, 1 Action, 1 Path
+//
 one sig s1,s2,s3 extends State {}
 one sig l,empty extends AP {}
-one sig p extends Path {}
-pred t9 {
-	succ = Init->s1+s1->s2+s2->s3+s3->s1
+one sig p,q extends Path {}
+pred t10 {
+	succ = Init->s1+s1->s2+s2->s3+s3->s2
 	Init.label = empty
 	s1.label = l
-	s2.label = l
+	s2.label = empty
 	s3.label = l
-	p = { path: Path | path.start = Init and path.end = s1 and path.tr.src = 0->Init+1->s1+2->s2+3->s3 }
+	p = { path: Path | path.start = Init and path.end = s2 and path.tr.src = 0->Init+1->s1+2->s2+3->s3 }
+	q = { path: Path | path.start = s2 and path.end = s2 and path.tr.src = 0->s2+1->s3 }
 }
-pred c9 {
-	p._w_pre = 0->empty
-	p._w_inf = 0->l
+pred c10 {
+	p._w_pre = 0->empty+1->l
+	p._w_inf = p._w_pre
+	no q._w_pre
+	q._w_inf = 0->empty+1->l
+	reduces_to"[p._w_pre, p._w_inf, q._w_pre, q._w_inf]
 }
-check lasso_4states_4 { t9 => c9 } for 2 AP, 4 State, 4 Transition, 4 seq, 1 Action, 1 Path
-run { t9 } for 2 AP, 4 State, 4 Transition, 4 seq, 1 Action, 1 Path
+check lasso_4states_5 { t10 => c10 } for 2 AP, 4 State, 4 Transition, 4 seq, 1 Action, 2 Path
+run { t10 } for 2 AP, 4 State, 4 Transition, 4 seq, 1 Action, 2 Path
