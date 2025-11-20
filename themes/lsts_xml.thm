@@ -8,25 +8,34 @@
 <defaultedge/>
 
 <node>
-   <type name="a"/>
-   <type name="a1"/>
-   <type name="a2"/>
-   <type name="emptyset"/>
+   <type name="empty"/>
    <type name="Int"/>
+   <type name="l"/>
+   <type name="p"/>
    <type name="q"/>
-   <type name="s0"/>
    <type name="s1"/>
    <type name="s2"/>
    <type name="s3"/>
-   <type name="s4"/>
    <type name="String"/>
    <type name="univ"/>
    <type name="blsts/Init"/>
    <type name="blsts/State"/>
    <type name="seq/Int"/>
-   <set name="$counterex_6_a" type="blsts/Action"/>
-   <set name="$counterex_6_p" type="blsts/blsts/Path"/>
-   <set name="$stutter_eq_p" type="blsts/blsts/Path"/>
+   <type name="blsts/blsts/ord_a/Ord"/>
+   <type name="blsts/blsts/ord_label/Ord"/>
+   <type name="blsts/blsts/ord_path/Ord"/>
+   <type name="blsts/blsts/ord_state/Ord"/>
+   <type name="blsts/blsts/ord_tr/Ord"/>
+   <set name="$first" type="blsts/Action"/>
+   <set name="$first" type="blsts/AP"/>
+   <set name="$first" type="blsts/blsts/AState"/>
+   <set name="$first" type="blsts/blsts/Path"/>
+   <set name="$first" type="blsts/blsts/Transition"/>
+   <set name="$last" type="blsts/Action"/>
+   <set name="$last" type="blsts/AP"/>
+   <set name="$last" type="blsts/blsts/AState"/>
+   <set name="$last" type="blsts/blsts/Path"/>
+   <set name="$last" type="blsts/blsts/Transition"/>
 </node>
 
 <node color="White">

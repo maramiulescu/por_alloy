@@ -102,6 +102,7 @@ fun _no_stut[trace: seq AP] : seq AP {
 
 // return the no-stutter trace of a lasso, up to the start of cycle
 fun _w_pre[p: Path] : seq AP {
+	// todo: first drop intermediate stutters, and then check for corner case
 	// corner case: when the stutter happens right at the start of the cycle
 	let trace = (p._pre._trace.last = p._cycle._trace.first) => p._pre._trace.butlast else p._pre._trace |
 		trace._no_stut
@@ -109,6 +110,7 @@ fun _w_pre[p: Path] : seq AP {
 
 // return the no-stutter trace of the cycle of a lasso
 fun _w_inf[p: Path] : seq AP {
+	// todo: handle corner case: when stutter happens right before the end of the cycle.
 	p._cycle._trace._no_stut
 }
 
@@ -132,13 +134,21 @@ fun _tau[w_pre, w_inf: seq AP] : seq AP {
 		{ i: Int, l: AP | {0 -> l}.append[rho] = w_inf.subseq[i, #rho] and some j: Int | {0 -> l}.append[rho] = w_pre.subseq[j, #rho] }
 }
 
-// no-stutter trace of q reduces to that of p
+fun _pre[p: seq AP, i: Int] : seq AP {
+	p.subseq[0, minus[i,1]]
+}
+
+fun _suf[p: seq AP, i: Int] : seq AP {
+	p.subseq[i, p.inds.max]
+}
+
 pred reduces_to[w_pre_p, w_inf_p, w_pre_q, w_inf_q: seq AP] {
-	some sigma, rho, tau: seq AP + { epsilon } {
-		sigma.append[rho] = w_pre_p
-		tau.append[rho] = w_inf_q
-		sigma = w_pre_q
-		rho.append[tau] = w_inf_q
+	some i: w_inf_p.inds, j: w_pre_p.inds {
+		let tau = _pre[w_inf_p, i], rho = _suf[w_inf_p, i], sigma = _pre[w_pre_p, j] {
+			w_inf_q = append[rho, tau]
+			w_pre_q = sigma
+			rho = _suf[w_pre_p, j]
+		}
 	}
 }
 
