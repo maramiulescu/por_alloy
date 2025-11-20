@@ -102,21 +102,17 @@ fun _no_stut[trace: seq AP] : seq AP {
 
 // return the no-stutter trace of a lasso, up to the start of cycle
 fun _w_pre[p: Path] : seq AP {
-	// todo: first drop intermediate stutters, and then check for corner case
+	let trace = p._pre._trace._no_stut |
 	// corner case: when the stutter happens right at the start of the cycle
-	let trace = (p._pre._trace.last = p._cycle._trace.first) => p._pre._trace.butlast else p._pre._trace |
-		trace._no_stut
+		trace.last = p._cycle._trace.first => trace.butlast else trace
 }
 
 // return the no-stutter trace of the cycle of a lasso
 fun _w_inf[p: Path] : seq AP {
-	// todo: handle corner case: when stutter happens right before the end of the cycle.
-	p._cycle._trace._no_stut
-}
-
-// longest rho
-fun _rho[w_pre, w_inf: seq AP] : seq AP {
-	{ i: Int, l: AP | l = w_inf[i] and some j: Int | l = w_pre[j] }
+	let trace = p._cycle._trace._no_stut |
+	// corner case: when the stutter happens right before the end of the cycle
+	// corner corner case: when the entire cycle stutters on the same label
+		trace.last = trace.first and #trace.inds > 1 => trace.butlast else trace
 }
 
 // t is a subsequence of s
@@ -126,12 +122,6 @@ pred is_subseq[s, t: seq AP] {
 		all i,j: t.inds | i < j implies i.R < j.R // all indices of t appear in the same order in s
 		 // all indices of t appear consecutively in s
 	}
-}
-
-// todo: fix out-of-order indices after append.
-fun _tau[w_pre, w_inf: seq AP] : seq AP {
-	let rho = _rho[w_pre, w_inf] |
-		{ i: Int, l: AP | {0 -> l}.append[rho] = w_inf.subseq[i, #rho] and some j: Int | {0 -> l}.append[rho] = w_pre.subseq[j, #rho] }
 }
 
 fun _pre[p: seq AP, i: Int] : seq AP {
