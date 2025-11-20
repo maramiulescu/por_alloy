@@ -7,6 +7,7 @@ sig State extends AState {}{
 	one label
 }
 one sig Init extends State {}
+one sig epsilon {}
 
 fact {
 	rooted_at [Init]
@@ -66,12 +67,6 @@ pred stutter_eq_deadlock[p,q: Path] {
 	p.tr.alternations = q.tr.alternations
 }
 
-pred stutter_eq_lasso[p,q: Path] {
-	#p.tr.alternations > #q.tr.alternations implies p.tr.butlast.alternations = q.tr.alternations
-	#q.tr.alternations > #p.tr.alternations implies q.tr.butlast.alternations = p.tr.alternations
-	Int.(p._cycle.alternations) = Int.(q._cycle.alternations)
-}
-
 fun alternations[tr: seq Transition] : seq AP->AP {
 	let no_stut = { i: tr.inds, t: Transition | i->t in tr and t.src.label != t.dest.label } |
 	{ i: Int, l,l": AP | some t: no_stut.elems | l = t.src.label and l" = t.dest.label and i = _f[idxOf[no_stut, t], no_stut.inds] }
@@ -118,12 +113,12 @@ fun _w_inf[p: Path] : seq AP {
 }
 
 // longest rho
-fun _rho[w_pre: seq AP, w_inf: seq AP] : seq AP {
+fun _rho[w_pre, w_inf: seq AP] : seq AP {
 	{ i: Int, l: AP | l = w_inf[i] and some j: Int | l = w_pre[j] }
 }
 
 // t is a subsequence of s
-pred is_subseq[s: seq AP, t: seq AP] {
+pred is_subseq[s, t: seq AP] {
 	let R = { i: s.inds, j: t.inds | s[i] = t[j] } {
 		all i: t.inds | some i.R // all indices of t appear in s
 		all i,j: t.inds | i < j implies i.R < j.R // all indices of t appear in the same order in s
@@ -132,7 +127,24 @@ pred is_subseq[s: seq AP, t: seq AP] {
 }
 
 // todo: fix out-of-order indices after append.
-fun _tau[w_pre: seq AP, w_inf: seq AP] : seq AP {
+fun _tau[w_pre, w_inf: seq AP] : seq AP {
 	let rho = _rho[w_pre, w_inf] |
 		{ i: Int, l: AP | {0 -> l}.append[rho] = w_inf.subseq[i, #rho] and some j: Int | {0 -> l}.append[rho] = w_pre.subseq[j, #rho] }
+}
+
+// no-stutter trace of q reduces to that of p
+pred reduces_to[w_pre_p, w_inf_p, w_pre_q, w_inf_q: seq AP] {
+	some sigma, rho, tau: seq AP + { epsilon } {
+		sigma.append[rho] = w_pre_p
+		tau.append[rho] = w_inf_q
+		sigma = w_pre_q
+		rho.append[tau] = w_inf_q
+	}
+}
+
+pred stutter_eq_lasso[p,q: Path] {
+	#p.tr > #q.tr implies reduces_to[p._w_pre, p._w_inf, q._w_pre, q._w_inf]
+	#q.tr > #p.tr implies reduces_to[q._w_pre, q._w_inf, p._w_pre, p._w_inf]
+	// otherwise, they have the same stutter-free pairs
+	#p.tr = # q.tr implies (p._w_pre = q._w_pre and p._w_inf = q._w_inf)
 }
