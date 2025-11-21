@@ -60,16 +60,12 @@ pred correctness {
 }
 
 pred stutter_eq[p,q: Path] {
-	(no p.end.enabled and no q.end.enabled and stutter_eq_deadlock[p,q]) or (is_lasso[p] and is_lasso[q] and stutter_eq_lasso[p,q])
-}
-
-pred stutter_eq_deadlock[p,q: Path] {
-	p.tr.alternations = q.tr.alternations
-}
-
-fun alternations[tr: seq Transition] : seq AP->AP {
-	let no_stut = { i: tr.inds, t: Transition | i->t in tr and t.src.label != t.dest.label } |
-	{ i: Int, l,l": AP | some t: no_stut.elems | l = t.src.label and l" = t.dest.label and i = _f[idxOf[no_stut, t], no_stut.inds] }
+	(p in lassos and q in lassos) => {
+		#p.tr > #q.tr implies reduces_to[p,q]
+		#q.tr > #p.tr implies reduces_to[q,p]
+		// otherwise, they have the same stutter-free pairs
+		#p.tr = # q.tr implies (p.w_pre = q.w_pre and p.w_inf = q.w_inf)
+	} else p.w_pre = q.w_pre
 }
 
 // return the number of indices in p that are smaller than i
@@ -77,21 +73,9 @@ fun _f[i: Int, p: set Int] : Int {
 	#{ j: p | j < i }
 }
 
-// return the transitions that make up the cycle of a lasso
-fun _cycle[p: Path] : seq Transition {
-	let start = { i: Int | some p.tr[i] and p.tr[i].src = p.end } |
-		p.tr.subseq[start,#p.tr.inds]
-}
-
-// return the transitions that precede the cycle of a lasso
-fun _pre[p: Path] : seq Transition {
-	let start = { i: Int | some p.tr[i] and p.tr[i].src = p.end } |
-		p.tr.subseq[0,minus[start,1]]
-}
-
 // return the sequence of state labels along a path (trace)
 fun _trace[tr: seq Transition] : seq AP {
-	tr.src.label
+	tr.src.label.add[tr.last.dest.label]
 }
 
 // remove stuttering from a trace
@@ -101,67 +85,65 @@ fun _no_stut[trace: seq AP] : seq AP {
 }
 
 // return the no-stutter trace of a lasso, up to the start of cycle
-fun _w_pre[p: Path] : seq AP {
-	let trace = p._pre._trace._no_stut |
-	// corner case: when the stutter happens right at the start of the cycle
-		trace.last = p._cycle._trace.first => trace.butlast else trace
+// and the no-stutter trace of the entire path if deadlocking
+fun w_pre[p: Path] : seq AP {
+	p in P_e => { 0-> p.start.label } else {
+		p in lassos => {
+			let start = { i: Int | some p.tr[i] and p.tr[i].src = p.end },
+			pre =  p.tr.subseq[0,minus[start,1]],
+			trace = pre._trace._no_stut |
+				// corner case: when the stutter happens right at the start of the cycle
+				trace.last = p.tr[start].src.label => trace.butlast else trace
+		} else p.tr._trace._no_stut
+	}
 }
 
 // return the no-stutter trace of the cycle of a lasso
-fun _w_inf[p: Path] : seq AP {
-	let trace = p._cycle._trace._no_stut |
-	// corner case: when the stutter happens right before the end of the cycle
-	// corner corner case: when the entire cycle stutters on the same label
-		trace.last = trace.first and #trace.inds > 1 => trace.butlast else trace
-}
-
-// t is a subsequence of s
-pred is_subseq[s, t: seq AP] {
-	let R = { i: s.inds, j: t.inds | s[i] = t[j] } {
-		all i: t.inds | some i.R // all indices of t appear in s
-		all i,j: t.inds | i < j implies i.R < j.R // all indices of t appear in the same order in s
-		 // all indices of t appear consecutively in s
+// and the empty sequence if deadlocking
+fun w_inf[p: Path] : seq AP {
+	p not in lassos => p.tr.subseq[-1,-1] else {
+		let start = { i: Int | some p.tr[i] and p.tr[i].src = p.end },
+		cycle = p.tr.subseq[start,#p.tr.inds],
+		trace = cycle._trace._no_stut |
+			// corner case: when the stutter happens right before the end of the cycle
+			// corner corner case: when the entire cycle stutters on the same label
+			trace.last = trace.first and #trace.inds > 1 => trace.butlast else trace
 	}
 }
 
-fun _pre[p: seq AP, i: Int] : seq AP {
+fun _pref[p: seq AP, i: Int] : seq AP {
 	p.subseq[0, minus[i,1]]
 }
 
-fun _suf[p: seq AP, i: Int] : seq AP {
+fun _suff[p: seq AP, i: Int] : seq AP {
 	p.subseq[i, p.inds.max]
 }
 
-pred reduces_to[w_pre_p, w_inf_p, w_pre_q, w_inf_q: seq AP] {
-	some i: w_inf_p.inds, j: w_pre_p.inds {
-		let tau = _pre[w_inf_p, i], rho = _suf[w_inf_p, i], sigma = _pre[w_pre_p, j] {
-			w_inf_q = append[rho, tau]
-			w_pre_q = sigma
-			rho = _suf[w_pre_p, j]
+pred reduces_to[p,q: Path] {
+	let w_pre_p = p.w_pre, w_inf_p = p.w_inf, w_pre_q = q.w_pre, w_inf_q = q.w_inf {
+	{ // case (s t*k, t) -> (s, t)
+		w_inf_p = w_inf_q
+		some k: Int {
+			let tau = w_inf_p, i = w_pre_p.idxOf[tau.first], sigma = _pref[w_pre_p, i] {
+				k >= 0
+				_suff[w_pre_p, i] = _repeat[tau, k]
+				w_pre_q = sigma
+			}
+		}
+	} or 
+	{ // case (s p, t p) -> (s, p t)
+		some i: w_inf_p.inds, j: w_pre_p.inds {
+			let tau = _pref[w_inf_p, i], rho = _suff[w_inf_p, i], sigma = _pref[w_pre_p, j] {
+				w_inf_q = append[rho, tau]
+				w_pre_q = sigma
+				rho = _suff[w_pre_p, j]
+			}
 		}
 	}
-}
-
-pred reduces_to"[w_pre_p, w_inf_p, w_pre_q, w_inf_q: seq AP] {
-	w_inf_p = w_inf_q
-	some k: Int {
-		let tau = w_inf_p, i = w_pre_p.idxOf[tau.first], sigma = _pre[w_pre_p, i] {
-			k >= 0
-			_suf[w_pre_p, i] = _repeat[tau, k]
-			w_pre_q = sigma
-		}
-	}
-}
+}}
 
 // return a sequence consisting of p repeated k times
 // note: the length of the new sequence should fit inside the seq bound
 fun _repeat[p: seq AP, k: Int] : seq AP {
 	k > 2 => p.append[p].append[p] else (k > 1 => p.append[p] else (k > 0 => p else p.subseq[-1,-1])) // the last case is a trick to return the empty sequence
-}
-
-pred stutter_eq_lasso[p,q: Path] {
-	#p.tr > #q.tr implies reduces_to[p._w_pre, p._w_inf, q._w_pre, q._w_inf]
-	#q.tr > #p.tr implies reduces_to[q._w_pre, q._w_inf, p._w_pre, p._w_inf]
-	// otherwise, they have the same stutter-free pairs
-	#p.tr = # q.tr implies (p._w_pre = q._w_pre and p._w_inf = q._w_inf)
 }
