@@ -112,11 +112,12 @@ fun w_inf[p: Path] : seq AP {
 }
 
 fun _pref[p: seq AP, i: Int] : seq AP {
-	p.subseq[0, minus[i,1]]
+	some i implies p.subseq[0, minus[i,1]] else p
 }
 
 fun _suff[p: seq AP, i: Int] : seq AP {
-	p.subseq[i, p.inds.max]
+	// the last case is a trick to return the empty sequence
+	some i implies p.subseq[i, p.inds.max] else p.subseq[-1,-1]
 }
 
 pred reduces_to[p,q: Path] {
