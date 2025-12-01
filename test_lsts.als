@@ -5,6 +5,4 @@ pred test {
 	redundancy [Init]
 	all_paths_exist
 }
-
-check lsts10 { test => correctness } for 4 seq, 7 State, 9 Transition, 2 AP, 2 Action, 24 Path
-
+check lsts { test => correctness } for 5 seq, 5 State, 2 Action, 2 AP, 9 Transition, 24 Path

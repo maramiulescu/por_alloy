@@ -4,4 +4,5 @@ pred test_correction {
 	D1" and D2w and V and I and L
 	all_paths_exist
 }
-check fix_lsts { test_correction => correctness } for 4 seq, 6 State, 6 Transition, 2 AP, 2 Action, 18 Path
+
+check fix_lsts { test_correction => correctness } for 5 seq, 5 State, 2 Action, 2 AP, 9 Transition, 24 Path
