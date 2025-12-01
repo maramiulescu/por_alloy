@@ -61,10 +61,7 @@ pred correctness {
 
 pred stutter_eq[p,q: Path] {
 	(p in lassos and q in lassos) => {
-		#p.tr > #q.tr implies reduces_to[p,q]
-		#q.tr > #p.tr implies reduces_to[q,p]
-		// otherwise, they have the same stutter-free pairs
-		#p.tr = # q.tr implies (p.w_pre = q.w_pre and p.w_inf = q.w_inf)
+		(p.w_pre = q.w_pre and p.w_inf = q.w_inf) or (#p.tr > #q.tr and reduces_to[p,q]) or (#q.tr > #p.tr and reduces_to[q,p])
 	} else p.w_pre = q.w_pre
 }
 
