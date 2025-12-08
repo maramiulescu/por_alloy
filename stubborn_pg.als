@@ -1,5 +1,6 @@
 module stubborn_pg
 open lib/blsts[Int, Action] as blsts
+open util/ordering[Strategy] as ord_str
 
 sig Action {}
 one sig Even {} // diamond

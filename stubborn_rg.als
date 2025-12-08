@@ -1,5 +1,6 @@
 module stubborn_rg
 open lib/blsts[Label,Action] as blsts
+open util/ordering[Strategy] as ord_str
 
 sig Label {}
 one sig P1, P2, goal extends Label {}
