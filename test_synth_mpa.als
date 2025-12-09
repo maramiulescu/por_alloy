@@ -1,4 +1,4 @@
-open stubborn_rg as rg
+open ample_synth_mpa as mpa
 
 pred test {
 	A1 and A2 and A3 and A51 and A52
