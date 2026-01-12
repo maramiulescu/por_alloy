@@ -1,6 +1,7 @@
 module stubborn_pg
+
 open lib/blsts[Int, Action] as blsts
-open util/ordering[Strategy] as ord_str
+open util/ordering[Strategy] as ord_strategy
 
 sig Action {}
 one sig Even {} // diamond
@@ -75,7 +76,7 @@ pred consistent [p: Path, st: S_e -> one State] {
 // player Even wins state s
 pred win_state [s: State] {
 	some st: Strategy {
-		all p: start.s & P_c| consistent[p, st.move] implies win_path[p]
+		all p: start.s & P_c | consistent[p, st.move] implies win_path[p]
 	}
 }
 

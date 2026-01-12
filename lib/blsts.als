@@ -1,11 +1,10 @@
 module lib/blsts [Label, A]
 
-// symmetry breaking
+open util/ordering[AState] as ord_astate
 open util/ordering[A] as ord_a
-open util/ordering[AState] as ord_state
+open util/ordering[Label] as ord_label
+open util/ordering[Transition] as ord_transition
 open util/ordering[Path] as ord_path
-open util/ordering[Label] as ord_label --disable for PG
-open util/ordering[Transition] as ord_tr
 
 abstract sig AState {
 	label: set Label,

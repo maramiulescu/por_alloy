@@ -1,4 +1,5 @@
 module ample_pa
+
 open lib/blsts[Sigma,Action] as blsts
 
 --------- finite state program 

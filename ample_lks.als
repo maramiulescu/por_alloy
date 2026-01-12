@@ -1,4 +1,5 @@
 module ample_lks
+
 open lib/blsts[AP, Action] as blsts
 
 sig AP {}

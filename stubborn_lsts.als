@@ -1,4 +1,5 @@
 module stubborn_lsts
+
 open lib/blsts[AP, Action] as blsts
 
 sig AP {}
