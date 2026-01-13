@@ -1,6 +1,6 @@
 module stubborn_pg
 
-open lib/blsts[Int, Action] as blsts
+open lib/lsts[Int, Action] as lsts
 open util/ordering[Strategy] as ord_strategy
 
 sig Action {}

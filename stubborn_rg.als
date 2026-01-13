@@ -1,6 +1,6 @@
 module stubborn_rg
 
-open lib/blsts[Label,Action] as blsts
+open lib/lsts[Label,Action] as lsts
 open util/ordering[Strategy] as ord_strategy
 
 sig Label {}

@@ -1,4 +1,4 @@
-module lib/blsts [Label, A]
+module lib/lsts [Label, A]
 
 open util/ordering[AState] as ord_astate
 open util/ordering[A] as ord_a

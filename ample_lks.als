@@ -1,6 +1,6 @@
 module ample_lks
 
-open lib/blsts[AP, Action] as blsts
+open lib/lsts[AP, Action] as lsts
 
 sig AP {}
 sig AP" in AP {} // interesting atomic propositions
