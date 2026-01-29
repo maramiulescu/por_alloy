@@ -6,4 +6,4 @@ pred test {
 	all_paths_exist
 }
 
-check pg { test => correctness } for 5 seq, exactly 1 Even, exactly 1 Odd, 5 State, 4 Action, 9 Transition, 6 Strategy, 22 Path
+check pg { test => correctness } for 5 seq, exactly 1 Even, exactly 1 Odd, 5 State, 4 Action, 9 Transition, 6 Strategy, 26 Path

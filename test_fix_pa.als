@@ -11,4 +11,4 @@ pred test {
 	Accepting = S1
 }
 
-check { test => correctness } for 4 State, 5 Transition, 2 Q, 2 S, 2 Operation, 2 Sigma, 4 Action, 1 Path
+check { test => correctness } for 4 seq, 4 State, 5 Transition, 2 Q, 2 S, 2 Operation, 2 Sigma, 4 Action, 1 Path
