@@ -1,6 +1,6 @@
 module stubborn_pg
 
-open lib/blsts[Int, Action] as blsts
+open lib/lsts[Int, Action] as lsts
 open util/ordering[Strategy] as ord_strategy
 
 sig Action {}
@@ -28,6 +28,7 @@ fact {
 	rooted_at [Init]
 	valid_strategies
 	all_strategies_exist
+	all_paths_exist
 }
 
 fun at [s: Strategy, i: State]: lone State { i.(s.move) }
@@ -63,9 +64,9 @@ fun min_priority[p: Path] : one Int {
 
 pred odd_priority[i: Int] { rem[i,2] = 1 }
 
-pred keyAction[a: Action, s: State] {
+pred key_action[a: Action, s: State] {
 	let reach = { t,t": State | some b: Action-s.r | t->b->t" in T } |
-		all s": s.*reach | a in s".enabled
+		all s": s.*reach | a in enabled[s"]
 }
 
 
@@ -97,22 +98,22 @@ pred win_path [pi: Path] {
 ---- stubborn sets
 pred D1" {
 	all s:State, a: s.r |
-		let P = { p: start.s-P_e | (no p.tr.label.elems & s.r) and a in p.end.enabled } |
+		let P = { p: start.s-P_e | (no p.tr.label.elems & s.r) and a in enabled[p.end] } |
 		all p: P | some t": seq Transition |
 			(valid_trseq[t"] and t".first.label=a and t".first.src=s and t".last.dest=a.(p.end.T) and t".rest.label=p.tr.label) and (a in Inv => all i: p.tr.inds | p.tr[i].dest->a->t"[add[i,1]].dest in T)
 }
 
 pred D2w {
-	all s: State | some s.enabled => some a: s.r | keyAction[a,s]
+	all s: State | some enabled[s] => some a: s.r | key_action[a,s]
 }
 
 pred V {
-	all s: State | some s.enabled & s.r & Viz => Viz in s.r
+	all s: State | some enabled[s] & s.r & Viz => Viz in s.r
 }
 
 pred I {
-	all s: State | let key = { a: s.r | keyAction[a,s] } |
-		some s.enabled & Inv => some Inv & key
+	all s: State | let key = { a: s.r | key_action[a,s] } |
+		some enabled[s] & Inv => some Inv & key
 }
 
 pred L {

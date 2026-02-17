@@ -1,6 +1,6 @@
 # por_alloy
 
-This repository contains the formalization in Alloy 6 (v6.2.0) of five partial-order reduction methods with known errors. In `lib/blsts.als` is a base formalism for the system to be reduced.
+This repository contains the formalization in Alloy 6 (v6.2.0) of five partial-order reduction methods with known errors. In `lib/lsts.als` is a base formalism for the system to be reduced.
 Below is a list of the partial-order reduction methods and where to find them in the code.
 
 - Stubborn sets applied to labelled-state transition systems [1,2,3]: `stubborn_lsts.als`

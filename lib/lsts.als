@@ -1,4 +1,4 @@
-module lib/blsts [Label, A]
+module lib/lsts [Label, A]
 
 open util/ordering[AState] as ord_astate
 open util/ordering[A] as ord_a
@@ -24,23 +24,13 @@ sig Path {
 }
 
 let P_e = { p: Path | no p.tr } // empty paths
-let P_r = { p: Path | all t: p.tr.elems | t.label in r[t.src] } // reduced paths
-let P_c = { p: Path | no p.end.enabled or is_lasso[p] } // complete paths
-let P_c_r = { p: Path | (no p.end.enabled & p.end.r or is_lasso[p]) and all t: p.tr.elems | t.label in r[t.src] } // complete reduced paths
+let P_r = { p: Path | all t: p.tr.elems | t.label in t.src.r } // reduced paths
+let P_c = { p: Path | no enabled[p.end] or is_lasso[p] } // complete paths
+let P_c_r = { p: Path | (no enabled[p.end] & p.end.r or is_lasso[p]) and all t: p.tr.elems | t.label in t.src.r } // complete reduced paths
 let lassos = { p: Path | is_lasso[p] }
-
-// transition relation
-fun T: AState -> A -> AState {
-	{ s: AState, a: A, s": AState | some t: Transition | t.src = s and t.label = a and t.dest = s" }
-}
-
-fun succ: AState -> set AState {
-	{ s, s": AState | s" in src.s.dest }
-}
-
-fun succ_r: AState -> set AState {
-	{ s, s": AState | some a: s.r | s->a->s" in T }
-}
+let T = { s: AState, a: A, s": AState | some t: Transition | t.src = s and t.label = a and t.dest = s" } // transition relation
+let succ = { s, s": AState | s" in src.s.dest }
+let succ_r = { s, s": AState | some a: s.r | s->a->s" in T } // reduced successor relation
 
 // actions enabled in s
 fun enabled[s: AState] : set A {
@@ -73,11 +63,11 @@ pred valid_path[p: Path] {
 	-- follows the transition relation
 	valid_trseq[p.tr]
 	-- is finite with no state repetitions or lasso	
-	add[#(p.tr.inds),1] = #(p.stateset) or is_lasso[p]
+	add[#(p.tr.inds),1] = #(stateset[p]) or is_lasso[p]
 }
 
 pred is_lasso[p: Path] {
-	#(p.tr.inds) = #(p.stateset) and p.end in p.tr.src.elems
+	#(p.tr.inds) = #(stateset[p]) and p.end in p.tr.src.elems
 }
 
 pred valid_trseq[tr: seq Transition] {
@@ -86,17 +76,14 @@ pred valid_trseq[tr: seq Transition] {
 }
 
 pred complete_trseq[tr: seq Transition] {
-	no tr.last.dest.enabled or (let stateset = tr.first.src + tr.dest.elems {
+	no enabled[tr.last.dest] or (let stateset = tr.first.src + tr.dest.elems {
 		#tr.inds >= #stateset and tr.last.dest in tr.src.elems
 	})
 }
 
 pred reduced_trseq[tr: seq Transition] {
-	all t: tr.elems | t.label in r[t.src]
+	all t: tr.elems | t.label in t.src.r
 }
-
---- make sure there is some reduction in the initial state
-pred redundancy [init: one AState] { some init.r and some init.enabled - init.r and some init.enabled & init.r }
 
 pred cycle[p: Path] {
 	p.start in p.end.succ
@@ -122,7 +109,7 @@ pred valid_path [p: Path, t: Transition] {
 		all i: tr".inds | let t1 = tr"[i], t2 = tr"[add[i,1]] |
 			(some t1 and some t2) => t1.dest = t2.src
 		-- is finite with no state repetition or a lasso	
-		add[#(tr".inds),1] = #(p.stateset + t.dest) or (add[#(p.tr.inds),1] = #p.stateset and t.dest in p.stateset)
+		add[#(tr".inds),1] = #(stateset[p] + t.dest) or (add[#(p.tr.inds),1] = #stateset[p] and t.dest in stateset[p])
 	}
 }
 

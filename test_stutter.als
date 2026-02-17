@@ -1,4 +1,4 @@
-open stubborn_lsts as blsts
+open stubborn_lsts as lsts
 
 // "unit tests" for stutter equivalence
 //	t1-t9: case (s p, t p) -> (s, p t)

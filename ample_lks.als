@@ -1,6 +1,6 @@
 module ample_lks
 
-open lib/blsts[AP, Action] as blsts
+open lib/lsts[AP, Action] as lsts
 
 sig AP {}
 sig AP" in AP {} // interesting atomic propositions
@@ -11,6 +11,7 @@ one sig Init extends State {}
 
 fact {
 	rooted_at [Init]
+	all_paths_exist
 }
 
 pred invisible [a: Action] {

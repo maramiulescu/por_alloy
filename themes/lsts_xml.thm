@@ -18,77 +18,77 @@
    <type name="s3"/>
    <type name="String"/>
    <type name="univ"/>
-   <type name="blsts/Init"/>
-   <type name="blsts/State"/>
+   <type name="lsts/Init"/>
+   <type name="lsts/State"/>
    <type name="seq/Int"/>
-   <type name="blsts/blsts/ord_a/Ord"/>
-   <type name="blsts/blsts/ord_label/Ord"/>
-   <type name="blsts/blsts/ord_path/Ord"/>
-   <type name="blsts/blsts/ord_state/Ord"/>
-   <type name="blsts/blsts/ord_tr/Ord"/>
-   <set name="$first" type="blsts/Action"/>
-   <set name="$first" type="blsts/AP"/>
-   <set name="$first" type="blsts/blsts/AState"/>
-   <set name="$first" type="blsts/blsts/Path"/>
-   <set name="$first" type="blsts/blsts/Transition"/>
-   <set name="$last" type="blsts/Action"/>
-   <set name="$last" type="blsts/AP"/>
-   <set name="$last" type="blsts/blsts/AState"/>
-   <set name="$last" type="blsts/blsts/Path"/>
-   <set name="$last" type="blsts/blsts/Transition"/>
+   <type name="lsts/lsts/ord_a/Ord"/>
+   <type name="lsts/lsts/ord_label/Ord"/>
+   <type name="lsts/lsts/ord_path/Ord"/>
+   <type name="lsts/lsts/ord_state/Ord"/>
+   <type name="lsts/lsts/ord_tr/Ord"/>
+   <set name="$first" type="lsts/Action"/>
+   <set name="$first" type="lsts/AP"/>
+   <set name="$first" type="lsts/lsts/AState"/>
+   <set name="$first" type="lsts/lsts/Path"/>
+   <set name="$first" type="lsts/lsts/Transition"/>
+   <set name="$last" type="lsts/Action"/>
+   <set name="$last" type="lsts/AP"/>
+   <set name="$last" type="lsts/lsts/AState"/>
+   <set name="$last" type="lsts/lsts/Path"/>
+   <set name="$last" type="lsts/lsts/Transition"/>
 </node>
 
 <node color="White">
-   <type name="blsts/blsts/Path"/>
+   <type name="lsts/lsts/Path"/>
 </node>
 
 <node color="White" label="t">
-   <type name="blsts/blsts/Transition"/>
+   <type name="lsts/lsts/Transition"/>
 </node>
 
 <node shape="Ellipse" color="Gray">
-   <type name="blsts/blsts/AState"/>
+   <type name="lsts/lsts/AState"/>
 </node>
 
 <node visible="no">
-   <type name="blsts/Action"/>
-   <type name="blsts/AP"/>
+   <type name="lsts/Action"/>
+   <type name="lsts/AP"/>
 </node>
 
 <edge attribute="yes">
-   <relation name="r"> <type name="blsts/blsts/AState"/> <type name="blsts/Action"/> </relation>
+   <relation name="r"> <type name="lsts/lsts/AState"/> <type name="lsts/Action"/> </relation>
 </edge>
 
 <edge color="Black">
-   <relation name="dest"> <type name="blsts/blsts/Transition"/> <type name="blsts/blsts/AState"/> </relation>
+   <relation name="dest"> <type name="lsts/lsts/Transition"/> <type name="lsts/lsts/AState"/> </relation>
 </edge>
 
 <edge color="Black" layout="yes">
-   <relation name="src"> <type name="blsts/blsts/Transition"/> <type name="blsts/blsts/AState"/> </relation>
+   <relation name="src"> <type name="lsts/lsts/Transition"/> <type name="lsts/lsts/AState"/> </relation>
 </edge>
 
 <edge visible="no">
-   <relation name="$next"> <type name="blsts/Action"/> <type name="blsts/Action"/> </relation>
-   <relation name="$next"> <type name="blsts/AP"/> <type name="blsts/AP"/> </relation>
-   <relation name="$next"> <type name="blsts/blsts/AState"/> <type name="blsts/blsts/AState"/> </relation>
-   <relation name="$next"> <type name="blsts/blsts/Path"/> <type name="blsts/blsts/Path"/> </relation>
-   <relation name="$next"> <type name="blsts/blsts/Transition"/> <type name="blsts/blsts/Transition"/> </relation>
-   <relation name="$prev"> <type name="blsts/Action"/> <type name="blsts/Action"/> </relation>
-   <relation name="$prev"> <type name="blsts/AP"/> <type name="blsts/AP"/> </relation>
-   <relation name="$prev"> <type name="blsts/blsts/AState"/> <type name="blsts/blsts/AState"/> </relation>
-   <relation name="$prev"> <type name="blsts/blsts/Path"/> <type name="blsts/blsts/Path"/> </relation>
-   <relation name="$prev"> <type name="blsts/blsts/Transition"/> <type name="blsts/blsts/Transition"/> </relation>
-   <relation name="$succ"> <type name="blsts/blsts/AState"/> <type name="blsts/blsts/AState"/> </relation>
-   <relation name="$succ_r"> <type name="blsts/blsts/AState"/> <type name="blsts/blsts/AState"/> </relation>
-   <relation name="$T"> <type name="blsts/blsts/AState"/> <type name="blsts/Action"/> <type name="blsts/blsts/AState"/> </relation>
+   <relation name="$next"> <type name="lsts/Action"/> <type name="lsts/Action"/> </relation>
+   <relation name="$next"> <type name="lsts/AP"/> <type name="lsts/AP"/> </relation>
+   <relation name="$next"> <type name="lsts/lsts/AState"/> <type name="lsts/lsts/AState"/> </relation>
+   <relation name="$next"> <type name="lsts/lsts/Path"/> <type name="lsts/lsts/Path"/> </relation>
+   <relation name="$next"> <type name="lsts/lsts/Transition"/> <type name="lsts/lsts/Transition"/> </relation>
+   <relation name="$prev"> <type name="lsts/Action"/> <type name="lsts/Action"/> </relation>
+   <relation name="$prev"> <type name="lsts/AP"/> <type name="lsts/AP"/> </relation>
+   <relation name="$prev"> <type name="lsts/lsts/AState"/> <type name="lsts/lsts/AState"/> </relation>
+   <relation name="$prev"> <type name="lsts/lsts/Path"/> <type name="lsts/lsts/Path"/> </relation>
+   <relation name="$prev"> <type name="lsts/lsts/Transition"/> <type name="lsts/lsts/Transition"/> </relation>
+   <relation name="$succ"> <type name="lsts/lsts/AState"/> <type name="lsts/lsts/AState"/> </relation>
+   <relation name="$succ_r"> <type name="lsts/lsts/AState"/> <type name="lsts/lsts/AState"/> </relation>
+   <relation name="$T"> <type name="lsts/lsts/AState"/> <type name="lsts/Action"/> <type name="lsts/lsts/AState"/> </relation>
 </edge>
 
 <edge visible="no" attribute="yes">
-   <relation name="end"> <type name="blsts/blsts/Path"/> <type name="blsts/blsts/AState"/> </relation>
-   <relation name="label"> <type name="blsts/blsts/AState"/> <type name="blsts/AP"/> </relation>
-   <relation name="label"> <type name="blsts/blsts/Transition"/> <type name="blsts/Action"/> </relation>
-   <relation name="start"> <type name="blsts/blsts/Path"/> <type name="blsts/blsts/AState"/> </relation>
-   <relation name="tr"> <type name="blsts/blsts/Path"/> <type name="seq/Int"/> <type name="blsts/blsts/Transition"/> </relation>
+   <relation name="end"> <type name="lsts/lsts/Path"/> <type name="lsts/lsts/AState"/> </relation>
+   <relation name="label"> <type name="lsts/lsts/AState"/> <type name="lsts/AP"/> </relation>
+   <relation name="label"> <type name="lsts/lsts/Transition"/> <type name="lsts/Action"/> </relation>
+   <relation name="start"> <type name="lsts/lsts/Path"/> <type name="lsts/lsts/AState"/> </relation>
+   <relation name="tr"> <type name="lsts/lsts/Path"/> <type name="seq/Int"/> <type name="lsts/lsts/Transition"/> </relation>
 </edge>
 
 </view>

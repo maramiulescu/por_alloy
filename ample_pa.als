@@ -1,15 +1,15 @@
 module ample_pa
 
-open lib/blsts[Sigma,Action] as blsts
+open lib/lsts[Sigma,Action] as lsts
 
 --------- finite state program 
 sig Q {
 	label: one Sigma,
-	enabled: set Operation,
-	T: enabled -> one Q,
+	enabled_Q: set Operation,
+	T_Q: enabled_Q -> one Q,
 	ample: S -> set Operation
 }{
-	all s: S | s.ample in enabled
+	all s: S | s.ample in enabled_Q
 }
 one sig Qinit extends Q {}
 sig Operation {}
@@ -17,8 +17,8 @@ sig Operation {}
 --------- Buchi automaton
 sig Sigma {}
 sig S {
-	enabled: set Sigma,
-	T: enabled -> S
+	enabled_S: set Sigma,
+	T_S: enabled_S -> S
 }
 one sig Sinit extends S {}
 sig Accepting in S {}
@@ -44,20 +44,20 @@ fact {
 	all_product_transitions_exist
 	all disj s,s": State | !(s.pstate=s".pstate and s.bstate=s".bstate)
 	all disj a,a": Action | !(a.plabel=a".plabel and a.blabel=a".blabel)
-	let r = { q,q": Q | some op: Operation | q->op->q" in Q <: T } | Qinit.*r = Q
+	let r = { q,q": Q | some op: Operation | q->op->q" in T_Q } | Qinit.*r = Q
 }
 
 pred valid_product_transitions {
 	all t: Transition | let q=t.src.pstate,q"=t.dest.pstate,s=t.src.bstate,s"=t.dest.bstate {
-		q->t.label.plabel->q" in Q <: T
-		s->q.label->s" in S <: T	
+		q->t.label.plabel->q" in T_Q
+		s->q.label->s" in T_S	
 		t.label.blabel = q.label
 	}
 }
 
 pred all_product_transitions_exist {
 	all q,q": Q, t,t": S, op: Operation, e: Sigma |
-		(e = q.label and q->op->q" in Q <: T and t->e->t" in S <: T) => some s,s": State, tr: Transition |
+		(e = q.label and q->op->q" in T_Q and t->e->t" in T_S) => some s,s": State, tr: Transition |
 			q=s.pstate and q"=s".pstate and t=s.bstate and t"=s".bstate and tr.src = s and tr.dest = s" and tr.label.plabel = op and tr.label.blabel = e
 }
 
@@ -66,15 +66,15 @@ fun prod_action[op: Operation, e: Sigma] : one Action {
 }
 
 pred independent[op,op": Operation] {
-	all q: Q | (op in q.enabled and op" in q.enabled) => {
-		op in op".(q.T).enabled
-		op" in op.(q.T).enabled
-		op.((op".(q.T)).T) =	op".((op.(q.T)).T)
+	all q: Q | (op in q.enabled_Q and op" in q.enabled_Q) => {
+		op in op".(q.T_Q).enabled_Q
+		op" in op.(q.T_Q).enabled_Q
+		op.((op".(q.T_Q)).T_Q) =	op".((op.(q.T_Q)).T_Q)
 	}
 }
 
 pred invisible[op: Operation] {
-	all q: (Q <: enabled.op) | q.label = op.(q.T).label
+	all q: (enabled_Q.op) | q.label = op.(q.T_Q).label
 }
 --------- ample sets
 fun amp[q: Q, s: S] : set Action {
@@ -82,19 +82,19 @@ fun amp[q: Q, s: S] : set Action {
 }
 
 pred C0 {
-	all s: State | some s.pstate.enabled => some r[s]
+	all s: State | some s.pstate.enabled_Q => some s.r
 }
 pred C1 {
 	all s: State |
-		let _r = { q1,q2: Q | some a: Action-r[s] | q1->a.plabel->q2 in Q <: T } |
-			all q": s.pstate.*_r, op: q".(Q <: enabled)-(r[s].plabel), op": r[s].plabel | independent[op,op"]
+		let _r = { q1,q2: Q | some a: Action-s.r | q1->a.plabel->q2 in T_Q } |
+			all q": s.pstate.*_r, op: q".(enabled_Q)-(s.r.plabel), op": s.r.plabel | independent[op,op"]
 }
 pred C2 {
-	all s: State | r[s].plabel != s.pstate.enabled => all a: r[s] | invisible[a.plabel]
+	all s: State | s.r.plabel != s.pstate.enabled_Q => all a: s.r | invisible[a.plabel]
 }
 
 pred C3"_1 {
-	let _r = {s,s": State | s->s" in succ_r and r[s].plabel != s.pstate.enabled } |
+	let _r = {s,s": State | s->s" in succ_r and s.r.plabel != s.pstate.enabled_Q } |
 		no s: State | s in s.^_r
 }
 
