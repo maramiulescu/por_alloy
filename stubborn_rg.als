@@ -38,23 +38,23 @@ fun at [s: State -> one {A1+ bot}, i: State]: lone { A1 + bot } { i.s }
 
 pred valid_strategies {
 	all st: Strategy {
-		all s: State | some s.enabled & A1 => (st.at[s] in s.enabled & A1) else st.at[s] = bot
+		all s: State | some enabled[s] & A1 => (st.at[s] in enabled[s] & A1) else st.at[s] = bot
 	}	
 }
 
 // a strategy sigma(s) that is valid in the full game may not be valid in the reduced game
 // i.e. if the action sigma(s) is not present in the reduced game
 pred valid_r_strategy[st: State -> one {A1 + bot}, s: State] {
-	some s.enabled & A1 & r[s] => (f[st,s] in s.enabled & A1 & r[s]) else f[st,s] = bot
+	some enabled[s] & A1 & s.r => (f[st,s] in enabled[s] & A1 & s.r) else f[st,s] = bot
 }
 
 // reduce strategy
 fun f[st: State -> one {A1+ bot}, s: State] : A1 + bot {
-	{ a: A1 + bot | st.at[s] in r[s] => a = st.at[s] else a = bot }
+	{ a: A1 + bot | st.at[s] in s.r => a = st.at[s] else a = bot }
 }
 
 pred all_strategies_exist {
-	all s: State, a: s.enabled & A1 | some st: Strategy | s->a in st.move
+	all s: State, a: enabled[s] & A1 | some st: Strategy | s->a in st.move
 
 	all disj st, st": Strategy {
 		let diffs1 = st".move - st.move |
@@ -75,15 +75,15 @@ fun path[s,s":State] : Path {
 }
 
 fun safe[s: State] : Action {
-	{ a: s.enabled & A1 | all disj q,p: Path | (no s.enabled & A2 and start[p]=s and actions[p] in A1-a and no end[p].enabled & A2 and start[q]=s and q.tr.label.first=a and q.tr.label.rest=p.tr.label) => no end[q].enabled & A2 }
+	{ a: enabled[s] & A1 | all disj q,p: Path | (no enabled[s] & A2 and start[p]=s and actions[p] in A1-a and no enabled[p.end] & A2 and start[q]=s and q.tr.label.first=a and q.tr.label.rest=p.tr.label) => no enabled[q.end] & A2 }
 }
 
 fun next_s[s: State, st: State -> one {A1 + bot}] : Action {
-	st.at[s] != bot => (s.enabled & A2 + st.at[s]) else s.enabled & A2
+	st.at[s] != bot => (enabled[s] & A2 + st.at[s]) else enabled[s] & A2
 }
 
 fun next_s_r[s: State, st: State -> one {A1 + bot}] : Action {
-	f[st,s] != bot => (s.enabled & A2 + f[st,s]) else s.enabled & A2
+	f[st,s] != bot => (enabled[s] & A2 + f[st,s]) else enabled[s] & A2
 }
 
 pred consistent [p: Path, st: State -> one {A1 + bot}] {
@@ -91,7 +91,7 @@ pred consistent [p: Path, st: State -> one {A1 + bot}] {
 }
 
 pred r_consistent [p: Path, st: State -> one {A1 + bot}] {
-	all t: p.tr.elems | some a: next_s_r[t.src,  st] & r[t.src] | t.label = a
+	all t: p.tr.elems | some a: next_s_r[t.src,  st] & t.src.r | t.label = a
 }
 
 // player p1 wins state s
@@ -110,48 +110,48 @@ pred r_win_state [s: State] {
 
 pred I {
 	all s: State |
-	(some s.enabled & A1 and some s.enabled & A2) => s.enabled in r[s]
+	(some enabled[s] & A1 and some enabled[s] & A2) => enabled[s] in s.r
 }
 
 pred W {
 	all s: State, a: s.r |
-	let P = { p: start.s-P_e | (no p.tr.label.elems & s.r) and a in p.end.enabled } |
+	let P = { p: start.s-P_e | (no p.tr.label.elems & s.r) and a in enabled[p.end] } |
 	all p: P | some t": seq Transition |
 		(valid_trseq[t"] and t".first.label=a and t".first.src=s and t".last.dest=a.(p.end.T) and t".rest.label=p.tr.label)
 }
 
 pred R {
-	all s: State | s.interesting in r[s]
+	all s: State | s.interesting in s.r
 }
 
 pred G1 {
 	all p: Path | let s = start[p], s" = end[p] |
-	actions[p] in Action-r[s] and no s.enabled & A2 => no s".enabled & A2
+	actions[p] in Action-s.r and no enabled[s] & A2 => no enabled[s"] & A2
 }
 
 pred G2 {
 	all p: Path | let s = start[p], s" = end[p] |
-	actions[p] in Action-r[s] and no s.enabled & A1 => no s".enabled & A1
+	actions[p] in Action-s.r and no enabled[s] & A1 => no enabled[s"] & A1
 }
 
 pred S {
 	all s: State |
-	s.enabled & A1 & r[s] in safe[s] or s.enabled & A1 in r[s]
+	enabled[s] & A1 & s.r in safe[s] or enabled[s] & A1 in s.r
 }
 
 pred C {
 	all a: A2, p: Path |
-	(actions[p] in A2 and cycle[p]) => a in r[start[p]]
+	(actions[p] in A2 and cycle[p]) => a in p.start.r
 }
 
 pred D {
 	all s: State |
-	some s.enabled & A2 => some a: s.enabled & A2 & r[s] | all p: Path | start[p]=s and actions[p] in Action-r[s] => a in end[p].enabled & A2
+	some enabled[s] & A2 => some a: enabled[s] & A2 & s.r | all p: Path | p.start=s and actions[p] in Action-s.r => a in enabled[p.end] & A2
 }
 
 pred V {
 	all s: State, p: start.s |
-	(actions[p] in A2 and end[p] in Goal) => s.enabled & A2 in r[s]
+	(actions[p] in A2 and p.end in Goal) => enabled[s] & A2 in s.r
 }
 
 pred correctness {

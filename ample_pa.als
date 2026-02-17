@@ -82,19 +82,19 @@ fun amp[q: Q, s: S] : set Action {
 }
 
 pred C0 {
-	all s: State | some s.pstate.enabled => some r[s]
+	all s: State | some s.pstate.enabled => some s.r
 }
 pred C1 {
 	all s: State |
-		let _r = { q1,q2: Q | some a: Action-r[s] | q1->a.plabel->q2 in Q <: T } |
-			all q": s.pstate.*_r, op: q".(Q <: enabled)-(r[s].plabel), op": r[s].plabel | independent[op,op"]
+		let _r = { q1,q2: Q | some a: Action-s.r | q1->a.plabel->q2 in Q <: T } |
+			all q": s.pstate.*_r, op: q".(Q <: enabled)-(s.r.plabel), op": s.r.plabel | independent[op,op"]
 }
 pred C2 {
-	all s: State | r[s].plabel != s.pstate.enabled => all a: r[s] | invisible[a.plabel]
+	all s: State | s.r.plabel != s.pstate.enabled => all a: s.r | invisible[a.plabel]
 }
 
 pred C3"_1 {
-	let _r = {s,s": State | s->s" in succ_r and r[s].plabel != s.pstate.enabled } |
+	let _r = {s,s": State | s->s" in succ_r and s.r.plabel != s.pstate.enabled } |
 		no s: State | s in s.^_r
 }
 
