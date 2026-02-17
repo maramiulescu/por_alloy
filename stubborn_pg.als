@@ -63,7 +63,7 @@ fun min_priority[p: Path] : one Int {
 
 pred odd_priority[i: Int] { rem[i,2] = 1 }
 
-pred keyAction[a: Action, s: State] {
+pred key_action[a: Action, s: State] {
 	let reach = { t,t": State | some b: Action-s.r | t->b->t" in T } |
 		all s": s.*reach | a in enabled[s"]
 }
@@ -103,7 +103,7 @@ pred D1" {
 }
 
 pred D2w {
-	all s: State | some enabled[s] => some a: s.r | keyAction[a,s]
+	all s: State | some enabled[s] => some a: s.r | key_action[a,s]
 }
 
 pred V {
@@ -111,7 +111,7 @@ pred V {
 }
 
 pred I {
-	all s: State | let key = { a: s.r | keyAction[a,s] } |
+	all s: State | let key = { a: s.r | key_action[a,s] } |
 		some enabled[s] & Inv => some Inv & key
 }
 
