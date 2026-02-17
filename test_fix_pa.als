@@ -7,7 +7,7 @@ pred test {
 	C0 and C1 and C2 and C3"_1
 
 	// Buchi automaton
-	S <: T = Sinit->empty->Sinit + Sinit->empty->S1 + S1->p->S1
+	T_S = Sinit->empty->Sinit + Sinit->empty->S1 + S1->p->S1
 	Accepting = S1
 }
 
