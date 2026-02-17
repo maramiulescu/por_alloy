@@ -28,6 +28,7 @@ fact {
 	rooted_at [Init]
 	valid_strategies
 	all_strategies_exist
+	all_paths_exist
 }
 
 fun at [s: Strategy, i: State]: lone State { i.(s.move) }

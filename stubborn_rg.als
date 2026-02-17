@@ -30,6 +30,7 @@ fact {
 	Action = A1+A2
 	no A1 & A2
 	deterministic
+	all_paths_exist
 }
 
 fun at [s: Strategy, i: State]: lone { A1 + bot } { i.(s.move) }

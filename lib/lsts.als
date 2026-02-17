@@ -85,9 +85,6 @@ pred reduced_trseq[tr: seq Transition] {
 	all t: tr.elems | t.label in t.src.r
 }
 
---- make sure there is some reduction in the initial state
-pred redundancy [init: one AState] { some init.r and some enabled[init] - init.r and some enabled[init] & init.r }
-
 pred cycle[p: Path] {
 	p.start in p.end.succ
 }

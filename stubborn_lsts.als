@@ -12,6 +12,7 @@ one sig epsilon {}
 
 fact {
 	rooted_at [Init]
+	all_paths_exist
 }
 
 let Viz = { a: Action | some t: Transition | t.label = a and t.src.label != t.dest.label }

@@ -11,6 +11,7 @@ one sig Init extends State {}
 
 fact {
 	rooted_at [Init]
+	all_paths_exist
 }
 
 pred invisible [a: Action] {
