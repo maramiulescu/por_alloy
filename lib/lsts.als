@@ -28,19 +28,9 @@ let P_r = { p: Path | all t: p.tr.elems | t.label in r[t.src] } // reduced paths
 let P_c = { p: Path | no p.end.enabled or is_lasso[p] } // complete paths
 let P_c_r = { p: Path | (no p.end.enabled & p.end.r or is_lasso[p]) and all t: p.tr.elems | t.label in r[t.src] } // complete reduced paths
 let lassos = { p: Path | is_lasso[p] }
-
-// transition relation
-fun T: AState -> A -> AState {
-	{ s: AState, a: A, s": AState | some t: Transition | t.src = s and t.label = a and t.dest = s" }
-}
-
-fun succ: AState -> set AState {
-	{ s, s": AState | s" in src.s.dest }
-}
-
-fun succ_r: AState -> set AState {
-	{ s, s": AState | some a: s.r | s->a->s" in T }
-}
+let T = { s: AState, a: A, s": AState | some t: Transition | t.src = s and t.label = a and t.dest = s" } // transition relation
+let succ = { s, s": AState | s" in src.s.dest }
+let succ_r = { s, s": AState | some a: s.r | s->a->s" in T } // reduced successor relation
 
 // actions enabled in s
 fun enabled[s: AState] : set A {
